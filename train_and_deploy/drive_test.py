@@ -12,13 +12,16 @@ data = json.load(f)
 throttle_lim = data['throttle_lim']
 
 pygame.joystick.init()
+pygame.display.init()
 js = pygame.joystick.Joystick(0)
 throttle = 0.
 
 try:
     while True:
-        throttle = -round((js.get_axis(1)), 2)  # throttle input: -1: max forward, 1: max backward
-        motor.drive(throttle * throttle_lim)  # apply throttle limit
+        for e in event.get():
+            if e.type == JOYAXISMOTION:
+                throttle = -round((js.get_axis(1)), 2)  # throttle input: -1: max forward, 1: max backward
+                motor.drive(throttle * throttle_lim)  # apply throttle limit
 
 except KeyboardInterrupt:
     motor.kill()
