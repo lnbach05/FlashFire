@@ -6,7 +6,7 @@ from pygame import event, display, joystick
 def get_numControllers():
     return joystick.get_count()
 
-display.init()
+#display.init()
 joystick.init()
 print(f"{get_numControllers()} joystick connected")
 js = joystick.Joystick(0)
