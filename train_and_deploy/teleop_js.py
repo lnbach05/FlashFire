@@ -30,7 +30,7 @@ throttle_lim = data['throttle_lim']
 #servo = kit.servo[15]
 
 # init controller
-pygame.display.init()
+#pygame.display.init()
 pygame.joystick.init()
 js = pygame.joystick.Joystick(0)
 # init variables
