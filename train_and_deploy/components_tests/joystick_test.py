@@ -1,4 +1,5 @@
 import evdev
+import time
 
 device_path = '/dev/input/event0'  # Modify this with your controller's device path
 
@@ -16,10 +17,14 @@ try:
 
                 print(f"Axis Value: {axis_value}")
 
+                time.sleep(1)
+
                 # Map the axis value to motor speed (0% to 100%)
                 speed = int(map_range(axis_value, -32768, 32767, 0, 100))
 
                 print(f"Speed: {speed}")
+
+                time.sleep(1)
 
             elif event.type == evdev.ecodes.EV_KEY:
                 # Handle button presses/releases if needed
