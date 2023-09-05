@@ -1,4 +1,4 @@
-# import pygame
+import pygame
 from pygame.locals import *
 from pygame import event, display, joystick
 
@@ -6,6 +6,7 @@ from pygame import event, display, joystick
 def get_numControllers():
     return joystick.get_count()
 
+pygame.init()
 display.init()
 joystick.init()
 print(f"{get_numControllers()} joystick connected")
