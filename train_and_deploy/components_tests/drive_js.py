@@ -4,7 +4,7 @@ import json
 import pygame
 from pygame.locals import JOYAXISMOTION
 from pygame import event
-import motor
+from train_and_deploy import motor
 
 config_path = os.path.join(sys.path[0], "train_and_deploy/config.json")
 f = open(config_path)
