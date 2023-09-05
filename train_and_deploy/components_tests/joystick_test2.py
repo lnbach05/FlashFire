@@ -1,37 +1,22 @@
-import pygame
+import evdev
 
-def main():
-    pygame.init()
-    pygame.joystick.init()
+# Replace '/dev/input/eventX' with the actual device path for your controller
+device_path = '/dev/input/event0'  # Modify this with your controller's device path
 
-    # Check for available controllers
-    if pygame.joystick.get_count() == 0:
-        print("No controllers found.")
-        return
+try:
+    device = evdev.InputDevice(device_path)
+    print(f"Reading input events from {device.name}...")
 
-    # Initialize the first controller
-    controller = pygame.joystick.Joystick(0)
-    controller.init()
+    for event in device.read_loop():
+        if event.type == evdev.ecodes.EV_KEY:
+            key_event = evdev.ecodes.KEY[event.code]
+            key_state = "pressed" if event.value == 1 else "released"
+            print(f"Key {key_event} {key_state}")
 
-    try:
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.JOYAXISMOTION:
-                    # Handle joystick axis motion
-                    print("Axis: {}, Value: {:.2f}".format(event.axis, event.value))
+        elif event.type == evdev.ecodes.EV_ABS:
+            axis_event = evdev.ecodes.ABS[event.code]
+            axis_value = event.value
+            print(f"Axis {axis_event} {axis_value}")
 
-                elif event.type == pygame.JOYBUTTONDOWN:
-                    # Handle button press
-                    print("Button {} down".format(event.button))
-
-                elif event.type == pygame.JOYBUTTONUP:
-                    # Handle button release
-                    print("Button {} up".format(event.button))
-
-    except KeyboardInterrupt:
-        pass
-
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()
+except FileNotFoundError:
+    print(f"Device not found at {device_path}")
