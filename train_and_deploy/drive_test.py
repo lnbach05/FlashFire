@@ -36,12 +36,12 @@ try:
                     servo_angle = int(map_range(event.value, 0, 255, 0, 180)) #turning
                     servo_pwm.ChangeDutyCycle(servo_angle/10.0 + 2.5)
 
-                elif event.code == 1: #Y-axis of the right joystick (motor control)
+                elif event.code == 5: #Y-axis of the right joystick (motor control)
                     axis_event = evdev.ecodes.ABS[event.code]
                     axis_value = event.value
 
                     # Map the axis value to motor speed (0% to 100%)
-                    speed = int(map_range(axis_value, 255, 0, -80, 80))
+                    speed = int(map_range(axis_value, 128, 0, 0, 80))
                     if speed < 0:
                         motor_pwm.ChangeDutyCycle(0)
                     else:
