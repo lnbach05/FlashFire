@@ -16,7 +16,7 @@ try:
                     left_value = event.value
 
                     print(f"Axis Value: {left_value}")
-                elif event.code == evdev.ecodes.ABS_RY:
+                elif event.code == 5:
                     right_event = evdev.ecodes.ABS[event.code]
                     right_value = event.value
 
