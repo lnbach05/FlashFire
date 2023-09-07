@@ -19,6 +19,8 @@ motor_pwm.start(0)  # Start with 0% duty cycle (stopped)
 servo_pwm = GPIO.PWM(servo_pin, 50)
 servo_pwm.start(0)
 
+servo_range = 100 #0-100%
+
 device_path = '/dev/input/event0' #controller
 
 def map_range(x, in_min, in_max, out_min, out_max):
