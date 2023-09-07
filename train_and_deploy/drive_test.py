@@ -2,15 +2,13 @@ import evdev
 import RPi.GPIO as GPIO
 
 # GPIO pins for motor control
-motor_pwm_pin = 18  # Replace with your PWM pin
-motor_direction_pin1 = 23  # Replace with your direction pin
-motor_direction_pin2 = 24  # Replace with your direction pin
+motor_pwm_pin = 26  # Replace with your PWM pin
+motor_direction_pin1 = 19  # Replace with your direction pin
 
 # Motor initialization
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(motor_pwm_pin, GPIO.OUT)
 GPIO.setup(motor_direction_pin1, GPIO.OUT)
-GPIO.setup(motor_direction_pin2, GPIO.OUT)
 
 # PWM setup for motor speed control
 motor_pwm = GPIO.PWM(motor_pwm_pin, 100)  # 100 Hz PWM frequency
