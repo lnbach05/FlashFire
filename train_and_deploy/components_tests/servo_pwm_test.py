@@ -14,10 +14,13 @@ servo_pwm.start(0)
 
 try:
     while True:
-        pwm = int(input("Please enter a pwm value to test the servo: "))
+        pwm = float(input("Please enter a pwm value to test the servo: "))
         print(f"Turning servo with pwm = {pwm}")
 
         servo_pwm.ChangeDutyCycle(pwm)
 
 except KeyboardInterrupt:
     pass
+
+finally:
+    servo_pwm.stop()
