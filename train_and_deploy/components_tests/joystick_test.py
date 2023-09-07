@@ -17,7 +17,7 @@ try:
                 print(f"Axis Value: {axis_value}")
 
                 # Map the axis value to motor speed (0% to 100%)
-                speed = int(map_range(axis_value, 0, 128, 0, 80))
+                speed = int(map_range(axis_value, 255, 128, -80, 80))
 
                 print(f"Speed: {speed}")
 
