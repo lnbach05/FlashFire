@@ -11,16 +11,22 @@ try:
     while True:
         for event in device.read_loop():
             if event.type == evdev.ecodes.EV_ABS:
-                axis_event = evdev.ecodes.ABS[event.code]
-                axis_value = event.value
+                if event.code == 0:
+                    left_event = evdev.ecodes.ABS[event.code]
+                    left_value = event.value
 
-                print(f"Axis Value: {axis_value}")
+                    print(f"Axis Value: {left_value}")
+                elif event.code == 1:
+                    right_event = evdev.ecodes.ABS[event.code]
+                    right_value = event.value
+
+                    print(f"Axis Value: {right_value}")
 
             elif event.type == evdev.ecodes.EV_KEY:
                 button_event = evdev.ecodes.EV_KEY[event.code]
                 button_value = event.value
 
-                print(f"Button Value: "{button_value})
+                #print(f"Button Value: "{button_value})
 
 except FileNotFoundError:
     print(f"Device not found at {device_path}")
