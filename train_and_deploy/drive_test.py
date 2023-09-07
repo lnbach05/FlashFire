@@ -35,8 +35,8 @@ try:
                     axis_value = event.value
                     servo_angle = int(map_range(event.value, 0, 255, 0, 180)) #turning
                     servo_pwm.ChangeDutyCycle(servo_angle)
-                    
-                elif event.code == 3: #Y-axis of the right joystick (motor control)
+
+                elif event.code == 1: #Y-axis of the right joystick (motor control)
                     axis_event = evdev.ecodes.ABS[event.code]
                     axis_value = event.value
 
