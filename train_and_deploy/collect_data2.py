@@ -97,7 +97,7 @@ try:
                         motor_pwm.ChangeDutyCycle(0)
                     else:
                         motor_pwm.ChangeDutyCycle(speed)
-                elif event.code == 304: #Y-button - toggles recording
+                elif event.code == 17: #Down-button - toggles recording
                     is_recording = not is_recording
                     if is_recording:
                         print("Recording data")
