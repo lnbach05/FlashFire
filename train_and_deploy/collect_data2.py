@@ -49,7 +49,7 @@ if not os.path.exists(image_dir):
 label_path = os.path.join(os.path.dirname(os.path.dirname(image_dir)), 'labels.csv')
 
 #init variables
-is_recording = False
+is_recording = True
 frame_counts = 0
 
 # init camera
@@ -97,12 +97,6 @@ try:
                         motor_pwm.ChangeDutyCycle(0)
                     else:
                         motor_pwm.ChangeDutyCycle(speed)
-                elif event.code == 17: #Down-button - toggles recording
-                    is_recording = not is_recording
-                    if is_recording:
-                        print("Recording data")
-                    else:
-                        print("Stopping data logging")
 
         action = [steer, throttle]
 
