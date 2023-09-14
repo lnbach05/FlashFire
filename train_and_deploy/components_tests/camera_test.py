@@ -1,7 +1,7 @@
+import os
+os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"  # Disable MSMF backend
 import cv2
 
-
-cv2.startWindowThread()
 cap = cv2.VideoCapture(0)
 while True:
     ret, frame = cap.read()
@@ -11,4 +11,3 @@ while True:
         break
 
 cv2.destroyAllWindows()
-
