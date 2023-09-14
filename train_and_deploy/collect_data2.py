@@ -1,7 +1,7 @@
 import evdev
 import RPi.GPIO as GPIO
 import cv2 as cv
-import time
+from time import time
 from datetime import datetime
 import sys
 import os
