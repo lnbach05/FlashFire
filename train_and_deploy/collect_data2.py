@@ -30,14 +30,6 @@ servo_range = 100 #0-100%
 
 device_path = '/dev/input/event0' #controller
 
-# SETUP
-# dummy video driver
-os.environ["SDL_VIDEODRIVER"] = "dummy"
-# load configs
-config_path = os.path.join(sys.path[0], "config.json")
-f = open(config_path)
-data = json.load(f)
-
 # create data storage
 image_dir = os.path.join(sys.path[0], 'data', datetime.now().strftime("%Y_%m_%d_%H_%M"), 'images/')
 if not os.path.exists(image_dir):
@@ -74,6 +66,7 @@ try:
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
+            print(frame_counts)
         else:
             motor_pwm.stop()
             GPIO.cleanup()
@@ -102,12 +95,12 @@ try:
 
         if is_recording:
             frame = cv.resize(frame, (120, 160))
-            cv.imwrite(image_dir + start_time+str(frame_counts)+'.jpg', frame) # changed frame to gray
+            cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
             # save labels
-            label = [start_time+str(frame_counts)+'.jpg'] + action
-            with open(label_path, 'a+', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(label)  # write the data
+            # label = [start_time+str(frame_counts)+'.jpg'] + action
+            # with open(label_path, 'a+', newline='') as f:
+            #     writer = csv.writer(f)
+            #     writer.writerow(label)  # write the data
         # monitor frame rate
         duration_since_start = time() - start_stamp
         ave_frame_rate = frame_counts / duration_since_start
