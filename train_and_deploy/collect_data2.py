@@ -66,7 +66,7 @@ try:
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
 
-    for event in device.read_loop() #Continuous loop
+    for event in device.read_loop(): #Continuous loop
 
         ret, frame = cap.read()
         if frame is not None:
