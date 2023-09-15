@@ -48,7 +48,7 @@ frame_counts = 0
 cap = cv.VideoCapture(0)
 if not cap.isOpened():
     print("ERROR: Camera not initialzed!!")
-    
+
 cap.set(cv.CAP_PROP_FPS, 20)
 for i in reversed(range(60)):  # warm up camera
     if not i % 20:
@@ -71,29 +71,26 @@ try:
             frame_counts += 1
             print(frame_counts)
     
-            for event in device.read_loop():
-                if event.type == evdev.ecodes.EV_ABS:
-                    if event.code == 0: #X-axis of the left joystick (servo control)
-                        axis_event = evdev.ecodes.ABS[event.code]
-                        steer = event.value
-                        servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
-                        servo_pwm.ChangeDutyCycle(servo_angle)
+        #     for event in device.read_loop():
+        #         if event.type == evdev.ecodes.EV_ABS:
+        #             if event.code == 0: #X-axis of the left joystick (servo control)
+        #                 axis_event = evdev.ecodes.ABS[event.code]
+        #                 steer = event.value
+        #                 servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
+        #                 servo_pwm.ChangeDutyCycle(servo_angle)
 
-                    elif event.code == 5: #Y-axis of the right joystick (motor control)
-                        axis_event = evdev.ecodes.ABS[event.code]
-                        throttle = event.value
+        #             elif event.code == 5: #Y-axis of the right joystick (motor control)
+        #                 axis_event = evdev.ecodes.ABS[event.code]
+        #                 throttle = event.value
 
-                        # Map the axis value to motor speed (0% to 100%)
-                        speed = float(map_range(throttle, 128, 0, 0, 80))
-                        if speed < 0:
-                            motor_pwm.ChangeDutyCycle(0)
-                        else:
-                            motor_pwm.ChangeDutyCycle(speed)
+        #                 # Map the axis value to motor speed (0% to 100%)
+        #                 speed = float(map_range(throttle, 128, 0, 0, 80))
+        #                 if speed < 0:
+        #                     motor_pwm.ChangeDutyCycle(0)
+        #                 else:
+        #                     motor_pwm.ChangeDutyCycle(speed)
 
-        else:
-            sys.exit()
-
-        action = [steer, throttle]
+        #action = [steer, throttle]
 
         if is_recording:
             frame = cv.resize(frame, (120, 160))
