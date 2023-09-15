@@ -67,8 +67,8 @@ try:
     print(f"Reading input events from {device.name}...")
 
     for event in device.read_loop(): #Continuous loop
-        steer = 0.0
-        throttle = 0.0
+        steer = 128.0
+        throttle = 128.0
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
