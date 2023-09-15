@@ -82,27 +82,27 @@ try:
                     servo_pwm.ChangeDutyCycle(servo_angle)
                     print(f'Steer: {steer}')
 
-        #             elif event.code == 5: #Y-axis of the right joystick (motor control)
-        #                 axis_event = evdev.ecodes.ABS[event.code]
-        #                 throttle = event.value
+                elif event.code == 5: #Y-axis of the right joystick (motor control)
+                    axis_event = evdev.ecodes.ABS[event.code]
+                    throttle = event.value
 
-        #                 # Map the axis value to motor speed (0% to 100%)
-        #                 speed = float(map_range(throttle, 128, 0, 0, 80))
-        #                 if speed < 0:
-        #                     motor_pwm.ChangeDutyCycle(0)
-        #                 else:
-        #                     motor_pwm.ChangeDutyCycle(speed)
+                    # Map the axis value to motor speed (0% to 100%)
+                    speed = float(map_range(throttle, 128, 0, 0, 80))
+                    if speed < 0:
+                        motor_pwm.ChangeDutyCycle(0)
+                    else:
+                        motor_pwm.ChangeDutyCycle(speed)
 
-        #action = [steer, throttle]
+        action = [steer, throttle]
 
         if is_recording:
             frame = cv.resize(frame, (120, 160))
             cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
             # save labels
-            # label = [start_time+str(frame_counts)+'.jpg'] + action
-            # with open(label_path, 'a+', newline='') as f:
-            #     writer = csv.writer(f)
-            #     writer.writerow(label)  # write the data
+            label = [start_time+str(frame_counts)+'.jpg'] + action
+            with open(label_path, 'a+', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(label)  # write the data
         # monitor frame rate
         duration_since_start = time() - start_stamp
         ave_frame_rate = frame_counts / duration_since_start
