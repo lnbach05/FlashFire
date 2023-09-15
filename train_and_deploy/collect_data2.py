@@ -67,7 +67,8 @@ try:
     print(f"Reading input events from {device.name}...")
 
     for event in device.read_loop(): #Continuous loop
-
+        steer = 0.0
+        throttle = 0.0
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
@@ -79,7 +80,7 @@ try:
                     steer = event.value
                     servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
                     servo_pwm.ChangeDutyCycle(servo_angle)
-                    print(f'Steer: {steer}')
+                    #print(f'Steer: {steer}')
 
                 elif event.code == 5: #Y-axis of the right joystick (motor control)
                     throttle = event.value
@@ -97,6 +98,7 @@ try:
                     break
 
         action = [steer, throttle]
+        print(f'Action: {action}')
 
         if is_recording:
             frame = cv.resize(frame, (120, 160))
