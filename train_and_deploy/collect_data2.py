@@ -72,7 +72,7 @@ try:
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
-            print(frame_counts)
+            #print(frame_counts)
     
         
             if event.type == evdev.ecodes.EV_ABS:
