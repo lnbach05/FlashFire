@@ -46,6 +46,9 @@ frame_counts = 0
 
 # init camera
 cap = cv.VideoCapture(0)
+if not cap.isOpened():
+    print("ERROR: Camera not initialzed!!")
+    
 cap.set(cv.CAP_PROP_FPS, 20)
 for i in reversed(range(60)):  # warm up camera
     if not i % 20:
