@@ -65,13 +65,15 @@ def map_range(x, in_min, in_max, out_min, out_max):
 try:
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
-    while True:
+
+    for event in device.read_loop(): #Continuous loop
+
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
             print(frame_counts)
     
-        for event in device.read_loop():
+        
             if event.type == evdev.ecodes.EV_ABS:
                 if event.code == 0: #X-axis of the left joystick (servo control)
                     axis_event = evdev.ecodes.ABS[event.code]
@@ -79,7 +81,6 @@ try:
                     servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
                     servo_pwm.ChangeDutyCycle(servo_angle)
                     print(f'Steer: {steer}')
-            break
 
         #             elif event.code == 5: #Y-axis of the right joystick (motor control)
         #                 axis_event = evdev.ecodes.ABS[event.code]
