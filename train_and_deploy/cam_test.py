@@ -4,7 +4,7 @@ import pickle
 import struct
 
 # Raspberry Pi's IP address and port for streaming
-rasp_ip = 'your_raspberry_pi_ip'
+rasp_ip = '192.168.0.181'
 port = 5001
 
 # Create a socket connection to the Raspberry Pi
