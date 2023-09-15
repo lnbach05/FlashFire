@@ -63,18 +63,22 @@ def map_range(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 try:
+    repeat = True
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
-
-    for event in device.read_loop(): #Continuous loop
+    while repeat:
         steer = 128.0
         throttle = 128.0
-        ret, frame = cap.read()
-        if frame is not None:
-            frame_counts += 1
-            #print(frame_counts)
-    
+        for event in device.read_loop(): #Continuous loop
+            steer = 128.0
+            throttle = 128.0
+            ret, frame = cap.read()
+
+            if frame is not None:
+                frame_counts += 1
+                #print(frame_counts)
         
+            
             if event.type == evdev.ecodes.EV_ABS:
                 if event.code == 0: #X-axis of the left joystick (servo control)
                     steer = event.value
@@ -95,22 +99,22 @@ try:
                     print(f'Throttle: {throttle}')
 
                 elif event.code == 17: #Down button
-                    break
+                    repeat = False
 
-        action = [steer, throttle]
-        print(f'Action: {action}')
+            action = [steer, throttle]
+            print(f'Action: {action}')
 
-        if is_recording:
-            frame = cv.resize(frame, (120, 160))
-            cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
-            # save labels
-            label = [start_time+str(frame_counts)+'.jpg'] + action
-            with open(label_path, 'a+', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(label)  # write the data
-        # monitor frame rate
-        duration_since_start = time() - start_stamp
-        ave_frame_rate = frame_counts / duration_since_start
+            if is_recording:
+                frame = cv.resize(frame, (120, 160))
+                cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
+                # save labels
+                label = [start_time+str(frame_counts)+'.jpg'] + action
+                with open(label_path, 'a+', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(label)  # write the data
+            # monitor frame rate
+            duration_since_start = time() - start_stamp
+            ave_frame_rate = frame_counts / duration_since_start
 
 except FileNotFoundError:
     print(f"Device not found at {device_path}")
