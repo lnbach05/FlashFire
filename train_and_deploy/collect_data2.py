@@ -79,6 +79,7 @@ try:
                     servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
                     servo_pwm.ChangeDutyCycle(servo_angle)
                     print(f'Steer: {steer}')
+                    break
 
         #             elif event.code == 5: #Y-axis of the right joystick (motor control)
         #                 axis_event = evdev.ecodes.ABS[event.code]
