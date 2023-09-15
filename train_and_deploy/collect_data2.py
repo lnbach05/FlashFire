@@ -71,13 +71,14 @@ try:
             frame_counts += 1
             print(frame_counts)
     
-        #     for event in device.read_loop():
-        #         if event.type == evdev.ecodes.EV_ABS:
-        #             if event.code == 0: #X-axis of the left joystick (servo control)
-        #                 axis_event = evdev.ecodes.ABS[event.code]
-        #                 steer = event.value
-        #                 servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
-        #                 servo_pwm.ChangeDutyCycle(servo_angle)
+        for event in device.read_loop():
+            if event.type == evdev.ecodes.EV_ABS:
+                if event.code == 0: #X-axis of the left joystick (servo control)
+                    axis_event = evdev.ecodes.ABS[event.code]
+                    steer = event.value
+                    servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
+                    servo_pwm.ChangeDutyCycle(servo_angle)
+                    print(f'Steer: {steer}')
 
         #             elif event.code == 5: #Y-axis of the right joystick (motor control)
         #                 axis_event = evdev.ecodes.ABS[event.code]
