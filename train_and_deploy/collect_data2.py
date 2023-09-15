@@ -63,11 +63,10 @@ def map_range(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 try:
-    repeat = True
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
 
-    for event in device.read_loop() and repeat is True: #Continuous loop
+    for event in device.read_loop() #Continuous loop
 
         ret, frame = cap.read()
         if frame is not None:
@@ -95,7 +94,7 @@ try:
                     print(f'Throttle: {throttle}')
 
                 elif event.code == 17: #Down button
-                    repeat = False
+                    break
 
         action = [steer, throttle]
 
