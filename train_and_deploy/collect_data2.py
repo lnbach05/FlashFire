@@ -66,11 +66,15 @@ try:
     #Define steer and throttle
     steer = 0
     throttle = 0
-    
+
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
     while True:
         for event in device.read_loop():
+            ret, frame = cap.read()
+            if frame is not None:
+                frame_counts += 1
+                print(frame_counts)
             if event.type == evdev.ecodes.EV_ABS:
                 if event.code == 0: #X-axis of the left joystick (servo control)
                     axis_event = evdev.ecodes.ABS[event.code]
