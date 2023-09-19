@@ -21,11 +21,11 @@ from time import time
 # dummy video driver
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 # load configs
-config_path = os.path.join(sys.path[0], "config.json")
-f = open(config_path)
-data = json.load(f)
-steering_trim = -1 * data['steering_trim']
-throttle_lim = data['throttle_lim']
+# config_path = os.path.join(sys.path[0], "config.json")
+# f = open(config_path)
+# data = json.load(f)
+# steering_trim = -1 * data['steering_trim']
+# throttle_lim = data['throttle_lim']
 # init servo controller
 kit = ServoKit(channels=16)
 servo = kit.servo[0]
