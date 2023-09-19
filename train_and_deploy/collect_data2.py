@@ -63,6 +63,10 @@ def map_range(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 try:
+    #Define steer and throttle
+    steer = 0
+    throttle = 0
+    
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
     while True:
