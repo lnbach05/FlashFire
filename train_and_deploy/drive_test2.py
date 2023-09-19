@@ -21,7 +21,7 @@ try:
                     motor_speed = map_value(event.ev_value, -32768, 32767, -1, 1)
                     motor.value = motor_speed
 
-                elif event.ev_code == "ABS_Y":  # Joystick Y-axis (servo control)
+                elif event.ev_type == "ABS_Y":  # Joystick Y-axis (servo control)
                     servo_position = map_value(event.ev_value, -32768, 32767, -1, 1)
                     servo.value = servo_position
 
