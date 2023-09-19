@@ -17,7 +17,7 @@ try:
 
         for event in events:
             if event.ev_type == "Absolute":
-                if event.ev_code == "ABS_X":  # Joystick X-axis (motor control)
+                if event.ev_type == "ABS_X":  # Joystick X-axis (motor control)
                     motor_speed = map_value(event.ev_value, -32768, 32767, -1, 1)
                     motor.value = motor_speed
 
