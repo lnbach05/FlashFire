@@ -1,4 +1,3 @@
-import asyncio
 import evdev
 import RPi.GPIO as GPIO
 import cv2 as cv
@@ -63,11 +62,20 @@ start_time=datetime.now().strftime("%Y_%m_%d_%H_%M_")
 def map_range(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
-async def read_input_events(device):
+try:
+    #Define steer and throttle
     steer = 0
     throttle = 0
 
-    async for event in device.async_read_loop():
+    device = evdev.InputDevice(device_path)
+    print(f"Reading input events from {device.name}...")
+    while True:
+        ret, frame = cap.read()
+        if frame is not None:
+            frame_counts += 1
+            print(frame_counts)
+
+        for event in device.read():
             if event.type == evdev.ecodes.EV_ABS:
                 if event.code == 0: #X-axis of the left joystick (servo control)
                     steer = event.value
@@ -76,6 +84,7 @@ async def read_input_events(device):
 
                 elif event.code == 5: #Y-axis of the right joystick (motor control)
                     throttle = event.value
+
                     # Map the axis value to motor speed (0% to 100%)
                     speed = float(map_range(throttle, 128, 0, 0, 80))
                     if speed < 0:
@@ -86,12 +95,6 @@ async def read_input_events(device):
                 action = [steer, throttle]
 
             if is_recording:
-                ret, frame = cap.read()
-
-                if frame is not None:
-                    frame_counts += 1
-                print(frame_counts)
-
                 frame = cv.resize(frame, (120, 160))
                 cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
                 # save labels
@@ -103,22 +106,10 @@ async def read_input_events(device):
             duration_since_start = time() - start_stamp
             ave_frame_rate = frame_counts / duration_since_start
 
-async def main():
-    device = evdev.InputDevice(device_path)
-    print(f"Reading input events from {device.name}...")
-    
-    # Start the input event reader as an asynchronous task
-    input_task = asyncio.create_task(read_input_events(device))
-
-    try:
-        while True:
-            await asyncio.sleep(1)  # Keep the main loop running
-    except KeyboardInterrupt:
-        pass
-    finally:
-        GPIO.cleanup()
-        input_task.cancel()
-        await input_task
-
-if __name__ == "__main__":
-    asyncio.run(main())
+except FileNotFoundError:
+    print(f"Device not found at {device_path}")
+except KeyboardInterrupt:
+    pass
+finally:
+    motor_pwm.stop()
+    GPIO.cleanup()
