@@ -96,14 +96,14 @@ try:
         if is_recording:
             frame = cv.resize(frame, (120, 160))
             cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
-        #     # save labels
-        #     label = [start_time+str(frame_counts)+'.jpg'] + action
-        #     with open(label_path, 'a+', newline='') as f:
-        #         writer = csv.writer(f)
-        #         writer.writerow(label)  # write the data
-        # # monitor frame rate
-        # duration_since_start = time() - start_stamp
-        # ave_frame_rate = frame_counts / duration_since_start
+            # save labels
+            label = [start_time+str(frame_counts)+'.jpg'] + action
+            with open(label_path, 'a+', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(label)  # write the data
+        # monitor frame rate
+        duration_since_start = time() - start_stamp
+        ave_frame_rate = frame_counts / duration_since_start
 
 except FileNotFoundError:
     print(f"Device not found at {device_path}")

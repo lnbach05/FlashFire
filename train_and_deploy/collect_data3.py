@@ -3,6 +3,10 @@ import RPi.GPIO as GPIO
 import cv2 as cv
 from datetime import datetime
 import asyncio
+import os
+import sys
+from time import time
+import csv
 
 # GPIO pins for motor control
 motor_pwm_pin = 26
@@ -24,11 +28,16 @@ servo_pwm.start(0)
 
 servo_range = 100  # 0-100%
 
+start_stamp = time()
+ave_frame_rate = 0.
+start_time=datetime.now().strftime("%Y_%m_%d_%H_%M_")
+
+
 device_path = '/dev/input/event0'  # controller
 
 # create data storage
-image_dir = 'your_image_directory'  # Replace with your image directory path
-label_path = 'your_label_path'  # Replace with your label file path
+image_dir = os.path.join(sys.path[0], 'data', datetime.now().strftime("%Y_%m_%d_%H_%M"), 'images/')
+label_path = os.path.join(os.path.dirname(os.path.dirname(image_dir)), 'labels.csv')
 
 # init variables
 is_recording = True
@@ -49,8 +58,11 @@ for i in reversed(range(60)):  # warm up camera
 steer = 0
 throttle = 0
 
+def map_range(x, in_min, in_max, out_min, out_max):
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
 async def handle_input_events(device):
-    global steer, throttle
+    global steer, throttle, action
 
     for event in device.async_read_loop():
         if event.type == evdev.ecodes.EV_ABS:
@@ -60,7 +72,7 @@ async def handle_input_events(device):
                 throttle = event.value
 
 async def control_servo_and_motor():
-    global steer, throttle
+    global steer, throttle, action
 
     while True:
         # Control servo based on steer value
@@ -76,12 +88,28 @@ async def control_servo_and_motor():
 
         await asyncio.sleep(0.01)  # Adjust the sleep duration as needed
 
+async def log_data():
+    global steer, throttle, action
+
+    while True:
+        frame = cv.resize(frame, (120, 160))
+        cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
+        # save labels
+        label = [start_time+str(frame_counts)+'.jpg'] + action
+        with open(label_path, 'a+', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(label)  # write the data
+        # monitor frame rate
+        duration_since_start = time() - start_stamp
+        ave_frame_rate = frame_counts / duration_since_start
+
 async def main():
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
 
     input_task = asyncio.create_task(handle_input_events(device))
     control_task = asyncio.create_task(control_servo_and_motor())
+    log_data = asyncio.create_task(log_data())
 
     try:
         while True:
