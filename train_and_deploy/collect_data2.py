@@ -69,41 +69,41 @@ try:
 
     device = evdev.InputDevice(device_path)
     print(f"Reading input events from {device.name}...")
+
+    for event in device.read_loop():
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
-            print(frame_counts)
+            #print(frame_counts)
+        if event.type == evdev.ecodes.EV_ABS:
+            if event.code == 0: #X-axis of the left joystick (servo control)
+                steer = event.value
+                servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
+                servo_pwm.ChangeDutyCycle(servo_angle)
 
-        for event in device.read_loop():
-            if event.type == evdev.ecodes.EV_ABS:
-                if event.code == 0: #X-axis of the left joystick (servo control)
-                    steer = event.value
-                    servo_angle = float(map_range(steer, 0, 255, 7.7, 11.7)) #turning
-                    servo_pwm.ChangeDutyCycle(servo_angle)
+            elif event.code == 5: #Y-axis of the right joystick (motor control)
+                throttle = event.value
 
-                elif event.code == 5: #Y-axis of the right joystick (motor control)
-                    throttle = event.value
+                # Map the axis value to motor speed (0% to 100%)
+                speed = float(map_range(throttle, 128, 0, 0, 80))
+                if speed < 0:
+                    motor_pwm.ChangeDutyCycle(0)
+                else:
+                    motor_pwm.ChangeDutyCycle(speed)
 
-                    # Map the axis value to motor speed (0% to 100%)
-                    speed = float(map_range(throttle, 128, 0, 0, 80))
-                    if speed < 0:
-                        motor_pwm.ChangeDutyCycle(0)
-                    else:
-                        motor_pwm.ChangeDutyCycle(speed)
+            action = [steer, throttle]
 
-                action = [steer, throttle]
-
-            if is_recording:
-                frame = cv.resize(frame, (120, 160))
-                cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
-            #     # save labels
-            #     label = [start_time+str(frame_counts)+'.jpg'] + action
-            #     with open(label_path, 'a+', newline='') as f:
-            #         writer = csv.writer(f)
-            #         writer.writerow(label)  # write the data
-            # # monitor frame rate
-            # duration_since_start = time() - start_stamp
-            # ave_frame_rate = frame_counts / duration_since_start
+        if is_recording:
+            frame = cv.resize(frame, (120, 160))
+            cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
+        #     # save labels
+        #     label = [start_time+str(frame_counts)+'.jpg'] + action
+        #     with open(label_path, 'a+', newline='') as f:
+        #         writer = csv.writer(f)
+        #         writer.writerow(label)  # write the data
+        # # monitor frame rate
+        # duration_since_start = time() - start_stamp
+        # ave_frame_rate = frame_counts / duration_since_start
 
 except FileNotFoundError:
     print(f"Device not found at {device_path}")
