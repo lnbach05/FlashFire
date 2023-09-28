@@ -1,7 +1,7 @@
 from adafruit_servokit import ServoKit
 import pygame
 import motor
-import servo
+#import servo
 
 # init controller
 pygame.display.init()
