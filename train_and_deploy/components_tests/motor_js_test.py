@@ -16,14 +16,14 @@ try:
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
                 throttle = -js.get_axis(1)  # throttle input: -1: max forward, 1: max backward
-                steer = -js.get_axis(3)  # steer_input: -1: left, 1: right
+                #steer = -js.get_axis(3)  # steer_input: -1: left, 1: right
         motor.drive(throttle)  # apply throttle limit
-        ang = 90 * (1 + steer)
-        if ang > 180:
-            ang = 180
-        elif ang < 0:
-            ang = 0
-        servo.angle = ang
+        # ang = 90 * (1 + steer)
+        # if ang > 180:
+        #     ang = 180
+        # elif ang < 0:
+        #     ang = 0
+        # servo.angle = ang
         
 except KeyboardInterrupt:
     motor.kill()
