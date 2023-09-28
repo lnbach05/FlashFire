@@ -3,6 +3,7 @@ import pygame
 import os
 #import servo
 import RPi.GPIO as GPIO
+import gpiozero
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -38,11 +39,11 @@ try:
                 print(throttle)
         if throttle > 0:
             GPIO.output(DIR_PIN, GPIO.LOW)  # forward
-            pwm.ChangeDutyCycle(throttle)
+            pwm.ChangeDutyCycle(throttle * 80)
         elif throttle < 0:
             GPIO.output(DIR_PIN, GPIO.HIGH)  # backward
             throttle = -throttle
-            pwm.ChangeDutyCycle(throttle)
+            pwm.ChangeDutyCycle(throttle * 80)
         else:
             pwm.ChangeDutyCycle(0)
                 #steer = -js.get_axis(3)  # steer_input: -1: left, 1: right
