@@ -18,8 +18,9 @@ try:
         for event in events:
             if event.ev_type == "Absolute":
                 if event.ev_type == "ABS_X":  # Joystick X-axis (motor control)
-                    motor_speed = map_value(event.ev_value, -32768, 32767, -1, 1)
-                    motor.value = motor_speed
+                    print(f'Event.ev_value{event.ev_type}')
+                    # motor_speed = map_value(event.ev_value, -32768, 32767, -1, 1)
+                    # motor.value = motor_speed
 
                 elif event.ev_type == "ABS_Y":  # Joystick Y-axis (servo control)
                     servo_position = map_value(event.ev_value, -32768, 32767, -1, 1)
