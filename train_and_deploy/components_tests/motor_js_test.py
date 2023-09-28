@@ -14,20 +14,20 @@ js = pygame.joystick.Joystick(0)
 # init variables
 throttle, steer = 0., 0.
 
+motor = PhaseEnableMotor(phase=19, enable=26)
+
 # MAIN
 try:
-    motor = PhaseEnableMotor(phase=19, enable=26)
+    
     while True:
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
                 throttle = -js.get_axis(1)  # throttle input: -1: max forward, 1: max backward
-                print(throttle)
-        if throttle > 0:
-            motor.forward(throttle)
-        elif throttle < 0:
-            motor.backward(throttle)
-        else:
-            motor.close()
+                #print(throttle)
+                if throttle > 0:
+                    motor.forward(throttle)
+                elif throttle < 0:
+                    motor.backward(throttle)
         
 except KeyboardInterrupt:
     pygame.quit()
