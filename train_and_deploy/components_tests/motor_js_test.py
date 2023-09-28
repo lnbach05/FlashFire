@@ -23,11 +23,10 @@ try:
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
                 throttle = -js.get_axis(1)  # throttle input: -1: max forward, 1: max backward
-                #print(throttle)
                 if throttle > 0:
                     motor.forward(throttle)
                 elif throttle < 0:
-                    motor.backward(throttle)
+                    motor.backward(-throttle)
         
 except KeyboardInterrupt:
     pygame.quit()
