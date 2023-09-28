@@ -24,7 +24,7 @@ try:
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
                 throttle = -js.get_axis(1)  # throttle input: -1: max forward, 1: max backward
-                steer = -js.get_axis(3)  # steer_input: -1: left, 1: right
+                steer = -js.get_axis(4)  # steer_input: -1: left, 1: right
 
         if throttle > 0:
             motor.forward(throttle)
