@@ -40,11 +40,11 @@ def drive(speed=0):
     assert speed >= -100
     if speed > 0:
         GPIO.output(DIR_PIN, GPIO.LOW)  # forward
-        pwm.ChangeDutyCycle(speed)
+        pwm.ChangeDutyCycle(speed * 80)
     elif speed < 0:
         GPIO.output(DIR_PIN, GPIO.HIGH)  # backward
         speed = -speed
-        pwm.ChangeDutyCycle(speed)
+        pwm.ChangeDutyCycle(speed * 80)
     else:
         pwm.ChangeDutyCycle(0)
 
