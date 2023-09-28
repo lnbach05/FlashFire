@@ -31,8 +31,7 @@ try:
         elif throttle < 0:
             motor.backward(-throttle)
 
-        angle = steer * 90 #map -1, 1 to an angle
-        servo.angle = angle
+        servo.value = steer
 
 except KeyboardInterrupt:
     pygame.quit()
