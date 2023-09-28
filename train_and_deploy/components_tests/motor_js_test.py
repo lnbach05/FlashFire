@@ -35,6 +35,7 @@ try:
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
                 throttle = -js.get_axis(1)  # throttle input: -1: max forward, 1: max backward
+                print(throttle)
         if throttle > 0:
             GPIO.output(DIR_PIN, GPIO.LOW)  # forward
             pwm.ChangeDutyCycle(throttle)
@@ -54,5 +55,4 @@ try:
         # servo.angle = ang
         
 except KeyboardInterrupt:
-    motor.kill()
     pygame.quit()
