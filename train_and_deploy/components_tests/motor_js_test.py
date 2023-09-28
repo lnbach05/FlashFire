@@ -1,7 +1,11 @@
 from adafruit_servokit import ServoKit
 import pygame
 import motor
+import os
 #import servo
+
+#import this to run with pygame and no webcam
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 # init controller
 pygame.display.init()
