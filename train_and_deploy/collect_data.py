@@ -40,7 +40,7 @@ js = pygame.joystick.Joystick(0)
 
 # init variables
 throttle, steer = 0., 0.
-is_recording = False
+is_recording = True
 frame_counts = 0
 
 # init camera
@@ -65,7 +65,6 @@ try:
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
-            print(frame_counts)
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
                 throttle = -js.get_axis(1)  # throttle input: -1: max forward, 1: max backward
@@ -99,7 +98,7 @@ try:
         duration_since_start = time() - start_stamp
         ave_frame_rate = frame_counts / duration_since_start
         #print(f"frame rate: {ave_frame_rate}")
-        
+
         if cv.waitKey(1)==ord('q'):
             cv.destroyAllWindows()
             pygame.quit()
