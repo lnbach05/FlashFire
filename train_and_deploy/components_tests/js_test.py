@@ -1,5 +1,8 @@
 import pygame
 import sys
+import os
+
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 # Initialize Pygame
 pygame.init()
