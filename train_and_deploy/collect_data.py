@@ -28,7 +28,6 @@ os.environ["SDL_VIDEODRIVER"] = "dummy"
 # steering_trim = -1 * data['steering_trim']
 # throttle_lim = data['throttle_lim']
 # init servo controller
-servo = kit.servo[0]
 image_dir = os.path.join(sys.path[0], 'data', datetime.now().strftime("%Y_%m_%d_%H_%M"), 'images/')
 if not os.path.exists(image_dir):
     try:
