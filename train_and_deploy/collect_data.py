@@ -8,10 +8,7 @@ import os
 import cv2 as cv
 from gpiozero import PhaseEnableMotor
 from gpiozero import Servo
-import motor
 import pygame
-from gpiozero import LED
-import json
 import csv
 from datetime import datetime
 
@@ -40,18 +37,20 @@ label_path = os.path.join(os.path.dirname(os.path.dirname(image_dir)), 'labels.c
 pygame.display.init()
 pygame.joystick.init()
 js = pygame.joystick.Joystick(0)
+
 # init variables
 throttle, steer = 0., 0.
 is_recording = False
 frame_counts = 0
+
 # init camera
 cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FPS, 20)
-for i in reversed(range(60)):  # warm up camera
-    if not i % 20:
-        print(i/20)
-    ret, frame = cap.read()
-# init timer, uncomment if you are cuious about frame rate
+# for i in reversed(range(60)):  # warm up camera
+#     if not i % 20:
+#         print(i/20)
+#     ret, frame = cap.read()
+# # init timer, uncomment if you are cuious about frame rate
 start_stamp = time()
 ave_frame_rate = 0.
 start_time=datetime.now().strftime("%Y_%m_%d_%H_%M_")
