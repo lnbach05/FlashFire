@@ -6,7 +6,8 @@
 import sys
 import os
 import cv2 as cv
-from adafruit_servokit import ServoKit
+from gpiozero import PhaseEnableMotor
+from gpiozero import Servo
 import motor
 import pygame
 from gpiozero import LED
@@ -27,12 +28,7 @@ os.environ["SDL_VIDEODRIVER"] = "dummy"
 # steering_trim = -1 * data['steering_trim']
 # throttle_lim = data['throttle_lim']
 # init servo controller
-kit = ServoKit(channels=16)
 servo = kit.servo[0]
-# init LEDs
-head_led = LED(16)
-tail_led = LED(12)
-# create data storage
 image_dir = os.path.join(sys.path[0], 'data', datetime.now().strftime("%Y_%m_%d_%H_%M"), 'images/')
 if not os.path.exists(image_dir):
     try:
@@ -61,6 +57,9 @@ start_stamp = time()
 ave_frame_rate = 0.
 start_time=datetime.now().strftime("%Y_%m_%d_%H_%M_")
 
+#Initialize motor and servo objects
+motor = PhaseEnableMotor(phase=19, enable=26)
+servo = Servo(24)
 
 # MAIN
 try:
@@ -68,31 +67,24 @@ try:
         ret, frame = cap.read()
         if frame is not None:
             frame_counts += 1
-        else:
-            motor.kill()
-            cv.destroyAllWindows()
-            pygame.quit()
-            sys.exit()
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
                 throttle = -js.get_axis(1)  # throttle input: -1: max forward, 1: max backward
-                steer = -js.get_axis(3)  # steer_input: -1: left, 1: right
+                steer = -js.get_axis(2)  # steer_input: -1: left, 1: right
             elif e.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     is_recording = not is_recording
-                    head_led.toggle()
-                    tail_led.toggle()
                     if is_recording:
                         print("Recording data")
                     else:
                         print("Stopping data logging")
-        motor.drive(throttle * throttle_lim)  # apply throttle limit
-        ang = 90 * (1 + steer) + steering_trim
-        if ang > 180:
-            ang = 180
-        elif ang < 0:
-            ang = 0
-        servo.angle = ang
+        if throttle > 0:
+            motor.forward(throttle)
+        elif throttle < 0:
+            motor.backward(-throttle)
+
+        servo.value = steer
+
         action = [steer, throttle]
         #print(f"action: {action}")
         if is_recording:
@@ -108,12 +100,10 @@ try:
         ave_frame_rate = frame_counts / duration_since_start
         #print(f"frame rate: {ave_frame_rate}")
         if cv.waitKey(1)==ord('q'):
-            motor.kill()
             cv.destroyAllWindows()
             pygame.quit()
             sys.exit()
 except KeyboardInterrupt:
-    motor.kill()
     cv.destroyAllWindows()
     pygame.quit()
     sys.exit()
