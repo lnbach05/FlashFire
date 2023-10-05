@@ -162,7 +162,7 @@ if __name__ == '__main__':
     fig.savefig('C:\\FlashFire\\models\\figure.png')
 
     # Save the model
-    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1")
+    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1.pth")
 
 
     
