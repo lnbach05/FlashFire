@@ -1,4 +1,3 @@
-from adafruit_servokit import ServoKit
 import pygame
 import os
 #import servo
