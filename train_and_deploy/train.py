@@ -98,8 +98,8 @@ def test(dataloader, model, loss_fn):
 if __name__ == '__main__':
 
     # Create a dataset
-    annotations_file = os.path.expanduser("~/mycar/FlashFire/train_and_deploy/data/2023_10_05_13_33/labels.csv")  # the name of the csv file
-    img_dir = os.path.expanduser("~/mycar/FlashFire/train_and_deploy/data/2023_10_05_13_33/images")  # the name of the folder with all the images in it
+    annotations_file = "C:\\FlashFire\\data\\data\\2023_10_05_13_33\\labels.csv"  # the name of the csv file
+    img_dir = "C:\\FlashFire\\data\\data\\2023_10_05_13_33\\images" # the name of the folder with all the images in it
     collected_data = CustomImageDataset(annotations_file, img_dir)
     print("data length: ", len(collected_data))
 
@@ -159,10 +159,10 @@ if __name__ == '__main__':
     axs.set_xlabel('Training Epoch')
     axs.set_title('FOLDER LOCATION DonkeyNet 15 Epochs lr=1e-3')
     axs.legend()
-    fig.savefig('FOLDER_LOCATION_DonkeyNet_15_epochs_lr_1e_3.png')
+    fig.savefig('C:\\FlashFire\\models\\figure.png')
 
     # Save the model
-    torch.save(model.state_dict(), "FOLDER_LOCATION_DonkeyNet_15_epochs_lr_1e_3.pth")
+    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1")
 
 
     
