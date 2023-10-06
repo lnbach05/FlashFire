@@ -157,7 +157,7 @@ if __name__ == '__main__':
     plt.plot(epochs_array, test_loss, '--', color='orange', label='Testing Loss')
     axs.set_ylabel('Loss')
     axs.set_xlabel('Training Epoch')
-    axs.set_title('FOLDER LOCATION DonkeyNet 15 Epochs lr=1e-3')
+    axs.set_title('Analyzing Training and Testing Loss')
     axs.legend()
     fig.savefig('C:\\FlashFire\\models\\figure.png')
 
