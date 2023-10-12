@@ -98,8 +98,8 @@ def test(dataloader, model, loss_fn):
 if __name__ == '__main__':
 
     # Create a dataset
-    annotations_file = "C:\\FlashFire\\data\\2023_10_10_15_37\\labels.csv"  # the name of the csv file
-    img_dir = "C:\\FlashFire\\data\\2023_10_10_15_37\\images" # the name of the folder with all the images in it
+    annotations_file = "C:\\FlashFire\\data\\2023_10_12_12_55\\labels.csv"  # the name of the csv file
+    img_dir = "C:\\FlashFire\\data\\2023_10_12_12_55\\images" # the name of the folder with all the images in it
     collected_data = CustomImageDataset(annotations_file, img_dir)
     print("data length: ", len(collected_data))
 
