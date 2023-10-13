@@ -69,6 +69,10 @@ try:
             if e.type == pygame.JOYAXISMOTION:
                 throttle = (-js.get_axis(1)) * 0.9 # throttle input: -1: max forward, 1: max backward
                 steer = -js.get_axis(2)  # steer_input: -1: left, 1: right
+                if steer > 0.7:
+                    steer = 0.7
+                elif steer < -0.7:
+                    steer = -0.7
             elif e.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     is_recording = not is_recording
@@ -81,7 +85,10 @@ try:
         elif throttle < 0:
             motor.backward(-throttle)
 
-        servo.value = steer
+        if steer == 0:
+            servo.value = 0.05
+        else:
+            servo.value = steer
 
         action = [steer, throttle]
         #print(f"action: {action}")
