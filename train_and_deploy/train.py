@@ -9,6 +9,8 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision import transforms
 import matplotlib.pyplot as plt
@@ -119,9 +121,12 @@ if __name__ == '__main__':
     # Models that train well:
     #     lr = 0.001, epochs = 10
     #     lr = 0.0001, epochs = 15 (epochs = 20 might also work)
-    model = cnn_network.DonkeyNet().to(DEVICE) # choose the architecture class from cnn_network.py
+    
+    # Define an optimizer and learning rate scheduler
+    model = cnn_network.OptimizedDonkeyNet().to(DEVICE)# choose the architecture class from cnn_network.py
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
     loss_fn = nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr= 0.001)
     epochs = 15
 
     # Optimize the model
@@ -133,6 +138,10 @@ if __name__ == '__main__':
         testing_loss = test(test_dataloader, model, loss_fn)
         print("average training loss: ", training_loss)
         print("average testing loss: ", testing_loss)
+        # Apply the learning rate scheduler after each epoch
+        scheduler.step()
+        current_lr = optimizer.param_groups[0]['lr']
+        print(f"Learning rate after scheduler step: {current_lr}")
         # save values
         train_loss.append(training_loss)
         test_loss.append(testing_loss)   
@@ -159,10 +168,10 @@ if __name__ == '__main__':
     axs.set_xlabel('Training Epoch')
     axs.set_title('Analyzing Training and Testing Loss')
     axs.legend()
-    fig.savefig('C:\\FlashFire\\models\\figure.png')
+    fig.savefig('C:\\FlashFire\\models\\figure_optim.png')
 
     # Save the model
-    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1.pth")
+    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1_optim.pth")
 
 
     
