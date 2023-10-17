@@ -18,7 +18,7 @@ import cnn_network
 # SETUP
 # load configs
 # init servo controller
-model_path = os.path.join(sys.path[0], 'models', 'model_reg.pth')
+model_path = os.path.join(sys.path[0], 'models', 'model1_reg.pth')
 to_tensor = transforms.ToTensor()
 model = cnn_network.DonkeyNet()
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
