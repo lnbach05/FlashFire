@@ -97,7 +97,7 @@ class OptimizedDonkeyNet(nn.Module):
         self.conv64_3 = nn.Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1))
         self.bn64_3 = nn.BatchNorm2d(64)
 
-        self.fc1 = nn.Linear(64*8*13, 128)
+        self.fc1 = nn.Linear(64*30*30, 128)
         self.dropout1 = nn.Dropout(0.20)  #implement drop out layers to reduce overfitting
         self.fc2 = nn.Linear(128, 128)
         self.dropout2 = nn.Dropout(0.20)
