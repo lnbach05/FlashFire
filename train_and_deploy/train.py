@@ -168,10 +168,10 @@ if __name__ == '__main__':
     axs.set_xlabel('Training Epoch')
     axs.set_title('Analyzing Training and Testing Loss')
     axs.legend()
-    fig.savefig('C:\\FlashFire\\models\\figure_reg.png')
+    fig.savefig('C:\\FlashFire\\models\\figure_optim.png')
 
     # Save the model
-    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1_reg.pth")
+    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1_optim.pth")
 
 
     
