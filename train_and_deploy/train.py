@@ -123,7 +123,7 @@ if __name__ == '__main__':
     #     lr = 0.0001, epochs = 15 (epochs = 20 might also work)
     
     # Define an optimizer and learning rate scheduler
-    model = cnn_network.DonkeyNet().to(DEVICE)# choose the architecture class from cnn_network.py
+    model = cnn_network.OptimizedDonkeyNetDonkeyNet().to(DEVICE)# choose the architecture class from cnn_network.py
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
     loss_fn = nn.MSELoss()
