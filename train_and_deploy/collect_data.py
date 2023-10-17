@@ -58,6 +58,8 @@ start_time=datetime.now().strftime("%Y_%m_%d_%H_%M_")
 #Initialize motor and servo objects
 motor = PhaseEnableMotor(phase=19, enable=26)
 servo = Servo(24)
+center = 0.05
+offset = 5.0
 
 # MAIN
 try:
@@ -69,10 +71,6 @@ try:
             if e.type == pygame.JOYAXISMOTION:
                 throttle = (-js.get_axis(1)) * 0.9 # throttle input: -1: max forward, 1: max backward
                 steer = -js.get_axis(2)  # steer_input: -1: left, 1: right
-                if steer > 0.7:
-                    steer = 0.7
-                elif steer < -0.7:
-                    steer = -0.7
             elif e.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     is_recording = not is_recording
@@ -86,7 +84,11 @@ try:
             motor.backward(-throttle)
 
         if steer == 0:
-            servo.value = 0.05
+            servo.value = center
+        elif steer > center + offset:
+            servo.value = offset
+        elif steer < -(steer + offset):
+            servo.value = -offset
         else:
             servo.value = steer
 
