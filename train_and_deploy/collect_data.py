@@ -61,6 +61,8 @@ servo = Servo(24)
 center = 0.05
 offset = 5.0
 
+servo.value = center #start servo with wheels straight
+
 # MAIN
 try:
     while True:
