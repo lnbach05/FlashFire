@@ -64,7 +64,7 @@ class DonkeyNet(nn.Module):
         self.conv64_5 = nn.Conv2d(32, 64, kernel_size=(5, 5), stride=(2, 2))
         self.conv64_3 = nn.Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1))
 
-        self.fc1 = nn.Linear(64*8*13, 128)  # (64*30*30, 128) for 300x300 images
+        self.fc1 = nn.Linear(64*30*30, 128)  # (64*30*30, 128) for 300x300 images
         self.fc2 = nn.Linear(128, 128)
         self.fc3 = nn.Linear(128, 2)
         self.relu = nn.ReLU()
@@ -83,6 +83,7 @@ class DonkeyNet(nn.Module):
         x = self.fc3(x)
         return x
 
+#Donkey Net with batch Normalization
 class OptimizedDonkeyNet(nn.Module):
 
     def __init__(self):
@@ -105,11 +106,6 @@ class OptimizedDonkeyNet(nn.Module):
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-        # Customize weight initialization
-        #init.kaiming_normal_(self.fc1.weight)
-        #init.kaiming_normal_(self.fc2.weight)
-        #init.kaiming_normal_(self.fc3.weight)
-
     def forward(self, x):
         x = self.relu(self.bn24(self.conv24(x)))
         x = self.relu(self.bn32(self.conv32(x)))
@@ -117,8 +113,6 @@ class OptimizedDonkeyNet(nn.Module):
         x = self.relu(self.bn64_3(self.conv64_3(x)))
         x = self.relu(self.bn64_3(self.conv64_3(x)))
         x = self.flatten(x)
-        # x = self.dropout1(self.relu(self.fc1(x)))
-        # x = self.dropout2(self.relu(self.fc2(x)))
         x = self.relu(self.fc1(x))
         x = self.relu(self.fc2(x))
         x = self.fc3(x)
