@@ -107,8 +107,6 @@ def test(dataloader, model, loss_fn):
     return test_loss
 
 
-
-
 if __name__ == '__main__':
 
     # Create a dataset
@@ -135,11 +133,12 @@ if __name__ == '__main__':
     #     lr = 0.0001, epochs = 15 (epochs = 20 might also work)
     
     # Define an optimizer and learning rate scheduler
+    lr = 0.001
     model = cnn_network.OptimizedDonkeyNet().to(DEVICE)# choose the architecture class from cnn_network.py
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
     loss_fn = nn.MSELoss()
-    epochs = 1
+    epochs = 15
 
     # Optimize the model
     train_loss = []
@@ -172,6 +171,7 @@ if __name__ == '__main__':
     epochs_array = list(range(epochs))
 
     # Graph the test and train data
+    plot_title = f'{model._get_name()} - {epochs} pochs - {lr} learning rate'
     fig = plt.figure()
     axs = fig.add_subplot(1,1,1)
     plt.plot(epochs_array, train_loss, color='b', label="Training Loss")

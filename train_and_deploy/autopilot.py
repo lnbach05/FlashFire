@@ -14,11 +14,15 @@ import torch.nn as nn
 from torchvision import transforms
 import cnn_network
 
-
+num_parameters = 2
+if len(sys.argv) != num_parameters:
+    print(f'Python script needs {num_parameters} parameters!!!')
+else:
+    model_name = sys.argv[1]
 # SETUP
 # load configs
 # init servo controller
-model_path = os.path.join(sys.path[0], 'models', 'model1_reg.pth')
+model_path = os.path.join(sys.path[0], 'models', model_name)
 to_tensor = transforms.ToTensor()
 model = cnn_network.DonkeyNet()
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
