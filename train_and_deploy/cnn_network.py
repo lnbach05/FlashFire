@@ -5,7 +5,6 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 import torch.nn.init as init
-from collections import OrderedDict
 
 class simpleNet(nn.Module):
     def __init__(self):
@@ -22,7 +21,8 @@ class simpleNet(nn.Module):
         #((98 - 5) / 2) + 1 = 47
         #((47 - 3)) / 1) + 1 = 45
 
-        self.fc1 = nn.Linear(256*45*45, 2)
+        self.fc1 = nn.Linear(256*45*45, 64)
+        self.fc2 = nn.Linear(64, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
@@ -36,6 +36,88 @@ class simpleNet(nn.Module):
         x = self.flatten(x)
 
         x = self.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+class moderateNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv8 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
+        self.conv64 = nn.Conv2d(16, 32, kernel_size=(5, 5), stride=(2, 2))
+        self.conv128 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1))
+        self.conv256 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1))
+
+        #SPATIAL DIMENSION FORMULA (Assume no padding)
+        #(Input height - kernel height) / (stride + 1)
+
+        #200x200
+        #((200 - 5) / 2) + 1 = 98
+        #((98 - 5) / 2) + 1 = 47
+        #((47 - 3)) / 1) + 1 = 45
+        #((45 - 3) / 1) + 1 = 43
+
+
+        self.fc1 = nn.Linear(128*43*43, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 2)
+        self.relu = nn.ReLU()
+        self.flatten = nn.Flatten()
+
+    def forward(self, x):               
+        x = self.relu(self.conv64(x))  
+        x = self.relu(self.conv128(x))  
+        x = self.relu(self.conv256(x))  
+
+        x = self.flatten(x)
+
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+class megaNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv24 = nn.Conv2d(3, 24, kernel_size=(5, 5), stride=(2, 2))
+        self.conv64 = nn.Conv2d(24, 64, kernel_size=(5, 5), stride=(2, 2))
+        self.conv102 = nn.Conv2d(64, 102, kernel_size=(3, 3), stride=(2, 2))
+        self.conv162 = nn.Conv2d(102, 162, kernel_size=(2, 2), stride=(1, 1))
+        self.conv264 = nn.Conv2d(162, 264, kernel_size=(1, 1), stride=(1, 1))
+
+
+        #SPATIAL DIMENSION FORMULA (Assume no padding)
+        #(Input height - kernel height) / (stride + 1)
+
+        #200x200
+        #((200 - 5) / 2) + 1 = 98
+        #((98 - 5) / 2) + 1 = 47
+        #((47 - 3)) / 2) + 1 = 23
+        #((23 - 2) / 1) + 1 = 22
+        #((22 - 1) / 1) + 1 = 22
+
+
+        self.fc1 = nn.Linear(128*22*22, 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc4 = nn.Linear(64, 32)
+        self.fc5 = nn.Linear(32, 2)
+        self.relu = nn.ReLU()
+        self.flatten = nn.Flatten()
+
+    def forward(self, x):               
+        x = self.relu(self.conv24(x))  
+        x = self.relu(self.conv64(x))  
+        x = self.relu(self.conv102(x))
+        x = self.relu(self.conv162(x))  
+        x = self.relu(self.conv264(x))    
+
+        x = self.flatten(x)
+
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.relu(self.fc3(x))
+        x = self.relu(self.fc4(x))
+        x = self.fc1(x)
         return x
 
 # Dokney docs --> parts --> keras and fastai (uses PyTorch)
@@ -68,74 +150,5 @@ class DonkeyNet(nn.Module):
         x = self.relu(self.fc2(x))
         x = self.fc3(x)
         return x
-
-
-class DenseNetRC(nn.Module):
-    def __init__(self, num_classes=2, input_channels=1):
-        super(DenseNetRC, self).__init__()
-
-        # Define the initial convolution layer for 200x200 images
-        self.features = nn.Sequential(OrderedDict([
-            ('conv0', nn.Conv2d(input_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)),
-            ('norm0', nn.BatchNorm2d(64)),
-            ('relu0', nn.ReLU(inplace=True)),
-            ('pool0', nn.MaxPool2d(kernel_size=3, stride=2, padding=1)),
-        ]))
-
-        # Define dense blocks and transition layers (adjust as needed)
-        # Add more dense blocks for greater depth
-        self.dense_block1 = self._make_dense_block(3, 6, growth_rate=16)
-        self.transition1 = self._make_transition_layer(256)
-
-        # Final batch normalization
-        self.features.add_module('norm5', nn.BatchNorm2d(256))
-
-        # Classifier for self-driving control (adjust output size)
-        self.classifier = nn.Linear(256, num_classes)
-
-        # Initialize weights and biases
-        self._initialize_weights()
-
-    def forward(self, x):
-        features = self.features(x)
-        out = F.relu(features, inplace=True)
-        out = F.adaptive_avg_pool2d(out, (1, 1))
-        out = torch.flatten(out, 1)
-        out = self.classifier(out)
-        return out
-
-    def _make_dense_block(self, num_input_features, num_layers, growth_rate):
-        layers = []
-        for i in range(num_layers):
-            layers.append(_DenseLayer(num_input_features + i * growth_rate, growth_rate))
-        return nn.Sequential(*layers)
-
-    def _make_transition_layer(self, num_input_features):
-        return nn.Sequential(
-            nn.BatchNorm2d(num_input_features),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(num_input_features, num_input_features // 2, kernel_size=1, stride=1, bias=False),
-            nn.AvgPool2d(kernel_size=2, stride=2)
-        )
-
-    def _initialize_weights(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.Linear):
-                nn.init.constant_(m.bias, 0)
-
-class _DenseLayer(nn.Sequential):
-    def __init__(self, num_input_features, growth_rate):
-        super(_DenseLayer, self).__init__()
-        self.add_module('norm1', nn.BatchNorm2d(num_input_features))
-        self.add_module('relu1', nn.ReLU(inplace=True))
-        self.add_module('conv1', nn.Conv2d(num_input_features, growth_rate, kernel_size=1, stride=1, bias=False))
-        self.add_module('norm2', nn.BatchNorm2d(growth_rate))
-        self.add_module('relu2', nn.ReLU(inplace=True))
-        self.add_module('conv2', nn.Conv2d(growth_rate, growth_rate, kernel_size=3, stride=1, padding=1, bias=False))
 
 
