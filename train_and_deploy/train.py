@@ -4,6 +4,7 @@
 
 
 import os
+import sys
 import numpy as np
 import pandas as pd
 import torch
@@ -17,6 +18,17 @@ import matplotlib.pyplot as plt
 import cnn_network
 import cv2 as cv
 
+num_parameters = 4 #first parameter is the script name
+#Pass in command line arguments for path name 
+if len(sys.argv) != num_parameters:
+    print(f'Python script needs {num_parameters} parameters!!!')
+    sys.exit(1) #Exit with an error code
+else:
+    data_dir = sys.argv[1]
+    model_name = sys.argv[2]
+    figure_name = sys.argv[3]
+    
+model_path = "C:\\FlashFire\\models\\"
 
 # Designate processing unit for CNN training
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -100,8 +112,8 @@ def test(dataloader, model, loss_fn):
 if __name__ == '__main__':
 
     # Create a dataset
-    annotations_file = "C:\\FlashFire\\data\\2023_10_17_13_37\\labels.csv"  # the name of the csv file
-    img_dir = "C:\\FlashFire\\data\\2023_10_17_13_37\\images" # the name of the folder with all the images in it
+    annotations_file = data_dir + '\labels.csv'  # the name of the csv file
+    img_dir = data_dir + '\images' # the name of the folder with all the images in it
     collected_data = CustomImageDataset(annotations_file, img_dir)
     print("data length: ", len(collected_data))
 
@@ -168,10 +180,10 @@ if __name__ == '__main__':
     axs.set_xlabel('Training Epoch')
     axs.set_title('Analyzing Training and Testing Loss')
     axs.legend()
-    fig.savefig('C:\\FlashFire\\models\\figure_optim.png')
+    fig.savefig(model_path + figure_name)
 
     # Save the model
-    torch.save(model.state_dict(), "C:\\FlashFire\\models\\model1_optim.pth")
+    torch.save(model.state_dict(), model_path + model_name)
 
 
     
