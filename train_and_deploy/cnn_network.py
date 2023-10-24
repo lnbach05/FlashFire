@@ -84,7 +84,7 @@ class DenseNetRC(nn.Module):
 
         # Define dense blocks and transition layers (adjust as needed)
         # Add more dense blocks for greater depth
-        self.dense_block1 = self._make_dense_block(64, 6, 32)
+        self.dense_block1 = self._make_dense_block(3, 6, growth_rate=16)
         self.transition1 = self._make_transition_layer(256)
 
         # Final batch normalization
