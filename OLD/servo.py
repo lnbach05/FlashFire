@@ -2,10 +2,10 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 # Set the GPIO mode
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 
 # Define the GPIO pin for the servo
-servo_pin = 18
+servo_pin = 24
 
 # Set the PWM frequency and duty cycle range
 frequency = 50  # Hz

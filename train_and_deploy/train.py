@@ -4,17 +4,31 @@
 
 
 import os
+import sys
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision import transforms
 import matplotlib.pyplot as plt
 import cnn_network
 import cv2 as cv
 
+num_parameters = 4 #first parameter is the script name
+#Pass in command line arguments for path name 
+if len(sys.argv) != num_parameters:
+    print(f'Python script needs {num_parameters} parameters!!!')
+    sys.exit(1) #Exit with an error code
+else:
+    data_dir = sys.argv[1]
+    model_name = sys.argv[2]
+    figure_name = sys.argv[3]
+    
+model_path = "/home/flashfire/FlashFire/models/"
 
 # Designate processing unit for CNN training
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -93,13 +107,11 @@ def test(dataloader, model, loss_fn):
     return test_loss
 
 
-
-
 if __name__ == '__main__':
 
     # Create a dataset
-    annotations_file = "FOLDER/labels.csv"  # the name of the csv file
-    img_dir = "FOLDER/images"  # the name of the folder with all the images in it
+    annotations_file = data_dir + '/labels.csv'  # the name of the csv file
+    img_dir = data_dir + '/images' # the name of the folder with all the images in it
     collected_data = CustomImageDataset(annotations_file, img_dir)
     print("data length: ", len(collected_data))
 
@@ -119,9 +131,13 @@ if __name__ == '__main__':
     # Models that train well:
     #     lr = 0.001, epochs = 10
     #     lr = 0.0001, epochs = 15 (epochs = 20 might also work)
-    model = cnn_network.DonkeyNet().to(DEVICE) # choose the architecture class from cnn_network.py
+    
+    # Define an optimizer and learning rate scheduler
+    lr = 0.001
+    model = cnn_network.megaNet().to(DEVICE)# choose the architecture class from cnn_network.py
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
     loss_fn = nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr= 0.001)
     epochs = 15
 
     # Optimize the model
@@ -133,6 +149,10 @@ if __name__ == '__main__':
         testing_loss = test(test_dataloader, model, loss_fn)
         print("average training loss: ", training_loss)
         print("average testing loss: ", testing_loss)
+        # Apply the learning rate scheduler after each epoch
+        #scheduler.step()
+        current_lr = optimizer.param_groups[0]['lr']
+        print(f"Learning rate after scheduler step: {current_lr}")
         # save values
         train_loss.append(training_loss)
         test_loss.append(testing_loss)   
@@ -151,18 +171,19 @@ if __name__ == '__main__':
     epochs_array = list(range(epochs))
 
     # Graph the test and train data
+    plot_title = f'{model._get_name()} - {epochs} pochs - {lr} learning rate'
     fig = plt.figure()
     axs = fig.add_subplot(1,1,1)
     plt.plot(epochs_array, train_loss, color='b', label="Training Loss")
     plt.plot(epochs_array, test_loss, '--', color='orange', label='Testing Loss')
     axs.set_ylabel('Loss')
     axs.set_xlabel('Training Epoch')
-    axs.set_title('FOLDER LOCATION DonkeyNet 15 Epochs lr=1e-3')
+    axs.set_title('Analyzing Training and Testing Loss')
     axs.legend()
-    fig.savefig('FOLDER_LOCATION_DonkeyNet_15_epochs_lr_1e_3.png')
+    fig.savefig(model_path + figure_name)
 
     # Save the model
-    torch.save(model.state_dict(), "FOLDER_LOCATION_DonkeyNet_15_epochs_lr_1e_3.pth")
+    torch.save(model.state_dict(), model_path + model_name)
 
 
     
