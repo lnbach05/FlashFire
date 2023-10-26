@@ -37,7 +37,7 @@ class simpleNet(nn.Module):
 class moderateNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv8 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
+        self.conv8 = nn.Conv2d(3, 24, kernel_size=(5, 5), stride=(2, 2))
         self.conv64 = nn.Conv2d(24, 32, kernel_size=(5, 5), stride=(2, 2))
         self.conv128 = nn.Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1))
         self.conv256 = nn.Conv2d(48, 64, kernel_size=(3, 3), stride=(1, 1))
