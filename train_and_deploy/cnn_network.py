@@ -53,9 +53,9 @@ class moderateNet(nn.Module):
         self.flatten = nn.Flatten()
 
     def forward(self, x):         
-        x = self.relu(self.conv8(x))        
-        x = self.relu(self.conv24(x))  
+        x = self.relu(self.conv24(x))        
         x = self.relu(self.conv32(x))  
+        x = self.relu(self.conv48(x))  
         x = self.relu(self.conv64(x))  
 
         x = self.flatten(x)
