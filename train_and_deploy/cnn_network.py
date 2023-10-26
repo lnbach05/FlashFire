@@ -86,10 +86,10 @@ class megaNet(nn.Module):
         #((22 - 1) / 1) + 1 = 22
 
 
-        self.fc1 = nn.Linear(64*34*34, 128)
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, 32)
-        self.fc4 = nn.Linear(32, 16)
+        self.fc1 = nn.Linear(64*34*34, 64)
+        self.fc2 = nn.Linear(64, 32)
+        self.fc3 = nn.Linear(32, 24)
+        self.fc4 = nn.Linear(24, 16)
         self.fc5 = nn.Linear(16, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
