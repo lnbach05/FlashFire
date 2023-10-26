@@ -37,10 +37,10 @@ class simpleNet(nn.Module):
 class moderateNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv8 = nn.Conv2d(3, 24, kernel_size=(5, 5), stride=(2, 2))
-        self.conv64 = nn.Conv2d(24, 32, kernel_size=(5, 5), stride=(2, 2))
-        self.conv128 = nn.Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1))
-        self.conv256 = nn.Conv2d(48, 64, kernel_size=(3, 3), stride=(1, 1))
+        self.conv24 = nn.Conv2d(3, 24, kernel_size=(5, 5), stride=(2, 2))
+        self.conv32 = nn.Conv2d(24, 32, kernel_size=(5, 5), stride=(2, 2))
+        self.conv48 = nn.Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1))
+        self.conv64 = nn.Conv2d(48, 64, kernel_size=(3, 3), stride=(1, 1))
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
         #(Input height - kernel height) / (stride + 1)
@@ -52,10 +52,11 @@ class moderateNet(nn.Module):
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-    def forward(self, x):               
+    def forward(self, x):         
+        x = self.relu(self.conv8(x))        
+        x = self.relu(self.conv24(x))  
+        x = self.relu(self.conv32(x))  
         x = self.relu(self.conv64(x))  
-        x = self.relu(self.conv128(x))  
-        x = self.relu(self.conv256(x))  
 
         x = self.flatten(x)
 
