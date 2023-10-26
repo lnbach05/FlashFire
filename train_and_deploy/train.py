@@ -28,7 +28,7 @@ else:
     model_name = sys.argv[2]
     figure_name = sys.argv[3]
     
-model_path = "~/FlashFire/models"
+model_path = "~/FlashFire/models/"
 
 # Designate processing unit for CNN training
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -138,7 +138,7 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
     loss_fn = nn.MSELoss()
-    epochs = 15
+    epochs = 1
 
     # Optimize the model
     train_loss = []
