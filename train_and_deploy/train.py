@@ -134,7 +134,7 @@ if __name__ == '__main__':
     
     # Define an optimizer and learning rate scheduler
     lr = 0.001
-    model = cnn_network.DenseNetRC(num_classes=2, input_channels=1).to(DEVICE)# choose the architecture class from cnn_network.py
+    model = cnn_network.simpleNet.to(DEVICE)# choose the architecture class from cnn_network.py
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
     loss_fn = nn.MSELoss()
