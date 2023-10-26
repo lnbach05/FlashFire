@@ -28,7 +28,7 @@ else:
     model_name = sys.argv[2]
     figure_name = sys.argv[3]
     
-model_path = "C:\\FlashFire\\models\\"
+model_path = "~/FlashFire/models"
 
 # Designate processing unit for CNN training
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"

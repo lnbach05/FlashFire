@@ -38,21 +38,15 @@ class moderateNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv8 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
-        self.conv64 = nn.Conv2d(16, 32, kernel_size=(5, 5), stride=(2, 2))
-        self.conv128 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1))
-        self.conv256 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1))
+        self.conv64 = nn.Conv2d(24, 32, kernel_size=(5, 5), stride=(2, 2))
+        self.conv128 = nn.Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1))
+        self.conv256 = nn.Conv2d(48, 64, kernel_size=(3, 3), stride=(1, 1))
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
         #(Input height - kernel height) / (stride + 1)
 
-        #200x200
-        #((200 - 5) / 2) + 1 = 98
-        #((98 - 5) / 2) + 1 = 47
-        #((47 - 3)) / 1) + 1 = 45
-        #((45 - 3) / 1) + 1 = 43
 
-
-        self.fc1 = nn.Linear(128*43*43, 128)
+        self.fc1 = nn.Linear(64*70*70, 128)
         self.fc2 = nn.Linear(128, 64)
         self.fc3 = nn.Linear(64, 2)
         self.relu = nn.ReLU()
