@@ -14,14 +14,9 @@ class simpleNet(nn.Module):
         self.conv256 = nn.Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1))
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
-        #(Input height - kernel height) / (stride + 1)
+        #(Input height - kernel height) / stride) + 1
 
-        #200x200
-        #((200 - 5) / 2) + 1 = 98
-        #((98 - 5) / 2) + 1 = 47
-        #((47 - 3)) / 1) + 1 = 45
-
-        self.fc1 = nn.Linear(256*45*45, 64)
+        self.fc1 = nn.Linear(256*70*70, 64)
         self.fc2 = nn.Linear(64, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
