@@ -9,9 +9,9 @@ import torch.nn.init as init
 class simpleNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv64 = nn.Conv2d(3, 64, kernel_size=(5, 5), stride=(2, 2))
-        self.conv128 = nn.Conv2d(64, 128, kernel_size=(5, 5), stride=(2, 2))
-        self.conv256 = nn.Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1))
+        self.conv64 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
+        self.conv128 = nn.Conv2d(16, 24, kernel_size=(5, 5), stride=(2, 2))
+        self.conv256 = nn.Conv2d(24, 32, kernel_size=(3, 3), stride=(1, 1))
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
         #(Input height - kernel height) / stride) + 1
