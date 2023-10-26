@@ -68,11 +68,11 @@ class moderateNet(nn.Module):
 class megaNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv24 = nn.Conv2d(3, 24, kernel_size=(5, 5), stride=(2, 2))
-        self.conv64 = nn.Conv2d(24, 64, kernel_size=(5, 5), stride=(2, 2))
-        self.conv102 = nn.Conv2d(64, 102, kernel_size=(3, 3), stride=(2, 2))
-        self.conv162 = nn.Conv2d(102, 162, kernel_size=(2, 2), stride=(1, 1))
-        self.conv264 = nn.Conv2d(162, 264, kernel_size=(1, 1), stride=(1, 1))
+        self.conv16 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
+        self.conv24 = nn.Conv2d(16, 24, kernel_size=(5, 5), stride=(2, 2))
+        self.conv32 = nn.Conv2d(24, 32, kernel_size=(3, 3), stride=(2, 2))
+        self.conv48 = nn.Conv2d(32, 48, kernel_size=(2, 2), stride=(1, 1))
+        self.conv64 = nn.Conv2d(48, 64, kernel_size=(1, 1), stride=(1, 1))
 
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
@@ -86,20 +86,20 @@ class megaNet(nn.Module):
         #((22 - 1) / 1) + 1 = 22
 
 
-        self.fc1 = nn.Linear(128*22*22, 256)
-        self.fc2 = nn.Linear(256, 128)
-        self.fc3 = nn.Linear(128, 64)
-        self.fc4 = nn.Linear(64, 32)
-        self.fc5 = nn.Linear(32, 2)
+        self.fc1 = nn.Linear(64*70*70, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 32)
+        self.fc4 = nn.Linear(32, 16)
+        self.fc5 = nn.Linear(16, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
     def forward(self, x):               
+        x = self.relu(self.conv16(x))  
         x = self.relu(self.conv24(x))  
-        x = self.relu(self.conv64(x))  
-        x = self.relu(self.conv102(x))
-        x = self.relu(self.conv162(x))  
-        x = self.relu(self.conv264(x))    
+        x = self.relu(self.conv32(x))
+        x = self.relu(self.conv48(x))  
+        x = self.relu(self.conv64(x))    
 
         x = self.flatten(x)
 
