@@ -109,10 +109,19 @@ def test(dataloader, model, loss_fn):
 
 if __name__ == '__main__':
 
+    #Apply data augmentation to make a more robust training set
+    transform = transforms.Compose([
+        transforms.RandomResizedCrop(200),
+        transforms.RandomHorizontalFlip(),  # Randomly flip the image horizontally
+        transforms.RandomRotation(30),      # Randomly rotate the image by up to 30 degrees
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),  # Randomly adjust brightness, contrast, saturation, and hue
+        transforms.RandomGrayscale(p=0.2),  # Randomly convert the image to grayscale with a probability of 0.2
+    ])
+
     # Create a dataset
     annotations_file = data_dir + '\labels.csv'  # the name of the csv file
     img_dir = data_dir + '\images' # the name of the folder with all the images in it
-    collected_data = CustomImageDataset(annotations_file, img_dir)
+    collected_data = CustomImageDataset(annotations_file, img_dir, transform=transform)
     print("data length: ", len(collected_data))
 
     # Define the size for train and test data
