@@ -9,19 +9,14 @@ import torch.nn.init as init
 class simpleNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv64 = nn.Conv2d(3, 64, kernel_size=(5, 5), stride=(2, 2))
-        self.conv128 = nn.Conv2d(64, 128, kernel_size=(5, 5), stride=(2, 2))
-        self.conv256 = nn.Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1))
+        self.conv64 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
+        self.conv128 = nn.Conv2d(16, 24, kernel_size=(5, 5), stride=(2, 2))
+        self.conv256 = nn.Conv2d(24, 32, kernel_size=(3, 3), stride=(1, 1))
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
-        #(Input height - kernel height) / (stride + 1)
+        #(Input height - kernel height) / stride) + 1
 
-        #200x200
-        #((200 - 5) / 2) + 1 = 98
-        #((98 - 5) / 2) + 1 = 47
-        #((47 - 3)) / 1) + 1 = 45
-
-        self.fc1 = nn.Linear(256*45*45, 64)
+        self.fc1 = nn.Linear(32*70*70, 64)
         self.fc2 = nn.Linear(64, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
@@ -42,31 +37,26 @@ class simpleNet(nn.Module):
 class moderateNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv8 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
-        self.conv64 = nn.Conv2d(16, 32, kernel_size=(5, 5), stride=(2, 2))
-        self.conv128 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1))
-        self.conv256 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1))
+        self.conv24 = nn.Conv2d(3, 24, kernel_size=(5, 5), stride=(2, 2))
+        self.conv32 = nn.Conv2d(24, 32, kernel_size=(5, 5), stride=(2, 2))
+        self.conv48 = nn.Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1))
+        self.conv64 = nn.Conv2d(48, 64, kernel_size=(3, 3), stride=(1, 1))
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
         #(Input height - kernel height) / (stride + 1)
 
-        #200x200
-        #((200 - 5) / 2) + 1 = 98
-        #((98 - 5) / 2) + 1 = 47
-        #((47 - 3)) / 1) + 1 = 45
-        #((45 - 3) / 1) + 1 = 43
 
-
-        self.fc1 = nn.Linear(128*43*43, 128)
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, 2)
+        self.fc1 = nn.Linear(64*68*68, 64)
+        self.fc2 = nn.Linear(64, 32)
+        self.fc3 = nn.Linear(32, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
-    def forward(self, x):               
+    def forward(self, x):         
+        x = self.relu(self.conv24(x))        
+        x = self.relu(self.conv32(x))  
+        x = self.relu(self.conv48(x))  
         x = self.relu(self.conv64(x))  
-        x = self.relu(self.conv128(x))  
-        x = self.relu(self.conv256(x))  
 
         x = self.flatten(x)
 
@@ -78,11 +68,11 @@ class moderateNet(nn.Module):
 class megaNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv24 = nn.Conv2d(3, 24, kernel_size=(5, 5), stride=(2, 2))
-        self.conv64 = nn.Conv2d(24, 64, kernel_size=(5, 5), stride=(2, 2))
-        self.conv102 = nn.Conv2d(64, 102, kernel_size=(3, 3), stride=(2, 2))
-        self.conv162 = nn.Conv2d(102, 162, kernel_size=(2, 2), stride=(1, 1))
-        self.conv264 = nn.Conv2d(162, 264, kernel_size=(1, 1), stride=(1, 1))
+        self.conv16 = nn.Conv2d(3, 16, kernel_size=(5, 5), stride=(2, 2))
+        self.conv24 = nn.Conv2d(16, 24, kernel_size=(5, 5), stride=(2, 2))
+        self.conv32 = nn.Conv2d(24, 32, kernel_size=(3, 3), stride=(2, 2))
+        self.conv48 = nn.Conv2d(32, 48, kernel_size=(2, 2), stride=(1, 1))
+        self.conv64 = nn.Conv2d(48, 64, kernel_size=(1, 1), stride=(1, 1))
 
 
         #SPATIAL DIMENSION FORMULA (Assume no padding)
@@ -96,20 +86,20 @@ class megaNet(nn.Module):
         #((22 - 1) / 1) + 1 = 22
 
 
-        self.fc1 = nn.Linear(128*22*22, 256)
-        self.fc2 = nn.Linear(256, 128)
-        self.fc3 = nn.Linear(128, 64)
-        self.fc4 = nn.Linear(64, 32)
-        self.fc5 = nn.Linear(32, 2)
+        self.fc1 = nn.Linear(64*34*34, 64)
+        self.fc2 = nn.Linear(64, 32)
+        self.fc3 = nn.Linear(32, 24)
+        self.fc4 = nn.Linear(24, 16)
+        self.fc5 = nn.Linear(16, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
     def forward(self, x):               
+        x = self.relu(self.conv16(x))  
         x = self.relu(self.conv24(x))  
-        x = self.relu(self.conv64(x))  
-        x = self.relu(self.conv102(x))
-        x = self.relu(self.conv162(x))  
-        x = self.relu(self.conv264(x))    
+        x = self.relu(self.conv32(x))
+        x = self.relu(self.conv48(x))  
+        x = self.relu(self.conv64(x))    
 
         x = self.flatten(x)
 

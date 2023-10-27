@@ -28,7 +28,7 @@ else:
     model_name = sys.argv[2]
     figure_name = sys.argv[3]
     
-model_path = "C:\\FlashFire\\models\\"
+model_path = "/home/flashfire/FlashFire/models/"
 
 # Designate processing unit for CNN training
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -119,9 +119,9 @@ if __name__ == '__main__':
     ])
 
     # Create a dataset
-    annotations_file = data_dir + '\labels.csv'  # the name of the csv file
-    img_dir = data_dir + '\images' # the name of the folder with all the images in it
-    collected_data = CustomImageDataset(annotations_file, img_dir, transform=transform)
+    annotations_file = data_dir + '/labels.csv'  # the name of the csv file
+    img_dir = data_dir + '/images' # the name of the folder with all the images in it
+    collected_data = CustomImageDataset(annotations_file, img_dir)
     print("data length: ", len(collected_data))
 
     # Define the size for train and test data
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     
     # Define an optimizer and learning rate scheduler
     lr = 0.001
-    model = cnn_network.DenseNetRC(num_classes=2, input_channels=1).to(DEVICE)# choose the architecture class from cnn_network.py
+    model = cnn_network.megaNet().to(DEVICE)# choose the architecture class from cnn_network.py
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
     loss_fn = nn.MSELoss()
