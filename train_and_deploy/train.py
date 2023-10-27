@@ -21,12 +21,11 @@ import cv2 as cv
 # Pass in command line arguments for path name 
 if len(sys.argv) != 2:
     print(f'Training script needs 1 parameters!!!')
-    sys.exit(1) #Exit with an error code
+    sys.exit(1)  # exit with an error code
 else:
     data_datetime = sys.argv[1]
     # model_name = sys.argv[2]
     # figure_name = sys.argv[3]
-    
 
 
 # Designate processing unit for CNN training
@@ -34,7 +33,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {DEVICE} device")
 
 
-class BearCartDataset(Dataset): 
+class BearCartDataset(Dataset):
     """
     Customized dataset
     """
@@ -52,8 +51,7 @@ class BearCartDataset(Dataset):
         image_tensor = self.transform(image)
         steering = self.img_labels.iloc[idx, 1].astype(np.float32)
         throttle = self.img_labels.iloc[idx, 2].astype(np.float32)
-        return image.float(), steering, throttle
-
+        return image_tensor.float(), steering, throttle
 
 
 def train(dataloader, model, loss_fn, optimizer):
@@ -62,14 +60,14 @@ def train(dataloader, model, loss_fn, optimizer):
     ep_loss = 0.
     for b, (im, st, th) in enumerate(dataloader):
         target = torch.stack((st, th), dim=-1)
-        feature, target= im.to(DEVICE), target.to(DEVICE)
+        feature, target = im.to(DEVICE), target.to(DEVICE)
         pred = model(feature)
-        batch_loss= loss_fn(pred, target)
+        batch_loss = loss_fn(pred, target)
         optimizer.zero_grad()  # zero previous gradient
         batch_loss.backward()  # back propagation
         optimizer.step()  # update params
         num_used_samples += target.shape[0]
-        print(f"batch loss: {batch_loss.item()} [{num_used_samples}/{len(dataloader)}]")
+        print(f"batch loss: {batch_loss.item()} [{num_used_samples}/{len(dataloader.dataset)}]")
         ep_loss = (ep_loss * b + batch_loss.item()) / (b + 1)
     # losses_train.append(ep_loss)
     return ep_loss
@@ -95,7 +93,6 @@ def train(dataloader, model, loss_fn, optimizer):
     #     print(f"loss: {batch_loss:>7f} [{sample_count:>5d}/{size:>5d}]")
     #     
     # return epoch_loss
-
         
 
 def test(dataloader, model, loss_fn):
@@ -104,7 +101,7 @@ def test(dataloader, model, loss_fn):
     with torch.no_grad():
         for b, (im, st, th) in enumerate(dataloader):
             target = torch.stack((st, th), dim=-1)
-            feature, target= im.to(DEVICE), target.to(DEVICE)
+            feature, target = im.to(DEVICE), target.to(DEVICE)
             pred = model(feature)
             batch_loss = loss_fn(pred, target)
             ep_loss = (ep_loss * b + batch_loss.item()) / (b + 1)
@@ -129,7 +126,6 @@ def test(dataloader, model, loss_fn):
     # return test_loss
 
 
-
 # MAIN
 # Create a dataset
 data_dir = os.path.join(sys.path[0], 'data', data_datetime)
@@ -139,37 +135,36 @@ bearcart_dataset = BearCartDataset(annotations_file, img_dir)
 print(f"data length: {len(bearcart_dataset)}")
 # Create training dataloader and test dataloader
 train_size = round(len(bearcart_dataset)*0.9)
-test_size = len(bearcart_dataset) - train_size 
+test_size = len(bearcart_dataset) - train_size
 print(f"train size: {train_size}, test size: {test_size}")
 train_data, test_data = random_split(bearcart_dataset, [train_size, test_size])
 train_dataloader = DataLoader(train_data, batch_size=125)
 test_dataloader = DataLoader(test_data, batch_size=125)
 # Create model
-model = cnn_network.megaNet().to(DEVICE)  # choose the architecture class from cnn_network.py
+model = cnn_network.moderateNet().to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 # scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
 loss_fn = nn.MSELoss()
-epochs = 15
-# # Optimize the model
-# train_loss = []
-# test_loss = []
-# for t in range(epochs):
-#     print(f"Epoch {t+1}\n-------------------------------")
-#     training_loss = train(train_dataloader, model, loss_fn, optimizer)
-#     testing_loss = test(test_dataloader, model, loss_fn)
-#     print("average training loss: ", training_loss)
-#     print("average testing loss: ", testing_loss)
-#     # Apply the learning rate scheduler after each epoch
-#     #scheduler.step()
-#     current_lr = optimizer.param_groups[0]['lr']
-#     print(f"Learning rate after scheduler step: {current_lr}")
-#     # save values
-#     train_loss.append(training_loss)
-#     test_loss.append(testing_loss)   
-#
-# print(f"Optimize Done!")
+epochs = 2
+# Optimize the model
+train_losses = []
+test_losses = []
+for t in range(epochs):
+    print(f"Epoch {t+1}\n-------------------------------")
+    ep_train_loss = train(train_dataloader, model, loss_fn, optimizer)
+    ep_test_loss = test(test_dataloader, model, loss_fn)
+    print(f"epoch {t+1} training loss: {ep_train_loss}, testing loss: {ep_test_loss}")
+    # Apply the learning rate scheduler after each epoch
+    # scheduler.step()
+    current_lr = optimizer.param_groups[0]['lr']
+    print(f"Learning rate after scheduler step: {current_lr}")
+    # save values
+    train_losses.append(ep_train_loss)
+    test_losses.append(ep_test_loss)
+
+print("Optimize Done!")
 
 
 #
