@@ -18,17 +18,16 @@ import matplotlib.pyplot as plt
 import cnn_network
 import cv2 as cv
 
-num_parameters = 4 #first parameter is the script name
-#Pass in command line arguments for path name 
-if len(sys.argv) != num_parameters:
-    print(f'Python script needs {num_parameters} parameters!!!')
+# Pass in command line arguments for path name 
+if len(sys.argv) != 2:
+    print(f'Training script needs 1 parameters!!!')
     sys.exit(1) #Exit with an error code
 else:
-    data_dir = sys.argv[1]
-    model_name = sys.argv[2]
-    figure_name = sys.argv[3]
+    data_datetime = sys.argv[1]
+    # model_name = sys.argv[2]
+    # figure_name = sys.argv[3]
     
-model_path = "/home/flashfire/FlashFire/models/"
+
 
 # Designate processing unit for CNN training
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -131,81 +130,83 @@ def test(dataloader, model, loss_fn):
 
 
 
+# MAIN
 # Create a dataset
+# model_path = "/home/flashfire/FlashFire/models/"
+data_dir = os.path.join(sys.path[0], 'data', data_datetime)
 annotations_file = os.path.join(data_dir, 'labels.csv')  # the name of the csv file
 img_dir = os.path.join(data_dir, 'images') # the name of the folder with all the images in it
 bearcart_dataset = BearCartDataset(annotations_file, img_dir)
-print("data length: ", len(bearcart_dataset))
+print(f"data length: {len(bearcart_dataset)}")
 
-# Define the size for train and test data
-train_data_len = len(collected_data)
-train_data_size = round(train_data_len*0.9)
-test_data_size = train_data_len - train_data_size 
-print("len and train and test: ", train_data_len, " ", train_data_size, " ", test_data_size)
+# Create training dataloader and test dataloader
+train_size = round(len(bearcart_dataset)*0.9)
+test_size = len(bearcart_dataset) - train_size 
+print(f"train size: {train_size}, test size: {test_size}")
 
-# Load the datset (split into train and test)
-train_data, test_data = random_split(collected_data, [train_data_size, test_data_size])
-train_dataloader = DataLoader(train_data, batch_size=125)
-test_dataloader = DataLoader(test_data, batch_size=125)
-
-
-# Initialize the model
-# Models that train well:
-#     lr = 0.001, epochs = 10
-#     lr = 0.0001, epochs = 15 (epochs = 20 might also work)
-
-# Define an optimizer and learning rate scheduler
-lr = 0.001
-model = cnn_network.megaNet().to(DEVICE)# choose the architecture class from cnn_network.py
-optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-#scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
-loss_fn = nn.MSELoss()
-epochs = 15
-
-# Optimize the model
-train_loss = []
-test_loss = []
-for t in range(epochs):
-    print(f"Epoch {t+1}\n-------------------------------")
-    training_loss = train(train_dataloader, model, loss_fn, optimizer)
-    testing_loss = test(test_dataloader, model, loss_fn)
-    print("average training loss: ", training_loss)
-    print("average testing loss: ", testing_loss)
-    # Apply the learning rate scheduler after each epoch
-    #scheduler.step()
-    current_lr = optimizer.param_groups[0]['lr']
-    print(f"Learning rate after scheduler step: {current_lr}")
-    # save values
-    train_loss.append(training_loss)
-    test_loss.append(testing_loss)   
-
-print(f"Optimize Done!")
-
-
-#print("final test lost: ", test_loss[-1])
-len_train_loss = len(train_loss)
-len_test_loss = len(test_loss)
-print("Train loss length: ", len_train_loss)
-print("Test loss length: ", len_test_loss)
-
-
-# create array for x values for plotting train
-epochs_array = list(range(epochs))
-
-# Graph the test and train data
-plot_title = f'{model._get_name()} - {epochs} pochs - {lr} learning rate'
-fig = plt.figure()
-axs = fig.add_subplot(1,1,1)
-plt.plot(epochs_array, train_loss, color='b', label="Training Loss")
-plt.plot(epochs_array, test_loss, '--', color='orange', label='Testing Loss')
-axs.set_ylabel('Loss')
-axs.set_xlabel('Training Epoch')
-axs.set_title('Analyzing Training and Testing Loss')
-axs.legend()
-fig.savefig(model_path + figure_name)
-
-# Save the model
-torch.save(model.state_dict(), model_path + model_name)
-
-
-
+# # Load the datset (split into train and test)
+# train_data, test_data = random_split(collected_data, [train_data_size, test_data_size])
+# train_dataloader = DataLoader(train_data, batch_size=125)
+# test_dataloader = DataLoader(test_data, batch_size=125)
+#
+#
+# # Initialize the model
+# # Models that train well:
+# #     lr = 0.001, epochs = 10
+# #     lr = 0.0001, epochs = 15 (epochs = 20 might also work)
+#
+# # Define an optimizer and learning rate scheduler
+# lr = 0.001
+# model = cnn_network.megaNet().to(DEVICE)# choose the architecture class from cnn_network.py
+# optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+# #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
+# loss_fn = nn.MSELoss()
+# epochs = 15
+#
+# # Optimize the model
+# train_loss = []
+# test_loss = []
+# for t in range(epochs):
+#     print(f"Epoch {t+1}\n-------------------------------")
+#     training_loss = train(train_dataloader, model, loss_fn, optimizer)
+#     testing_loss = test(test_dataloader, model, loss_fn)
+#     print("average training loss: ", training_loss)
+#     print("average testing loss: ", testing_loss)
+#     # Apply the learning rate scheduler after each epoch
+#     #scheduler.step()
+#     current_lr = optimizer.param_groups[0]['lr']
+#     print(f"Learning rate after scheduler step: {current_lr}")
+#     # save values
+#     train_loss.append(training_loss)
+#     test_loss.append(testing_loss)   
+#
+# print(f"Optimize Done!")
+#
+#
+# #print("final test lost: ", test_loss[-1])
+# len_train_loss = len(train_loss)
+# len_test_loss = len(test_loss)
+# print("Train loss length: ", len_train_loss)
+# print("Test loss length: ", len_test_loss)
+#
+#
+# # create array for x values for plotting train
+# epochs_array = list(range(epochs))
+#
+# # Graph the test and train data
+# plot_title = f'{model._get_name()} - {epochs} pochs - {lr} learning rate'
+# fig = plt.figure()
+# axs = fig.add_subplot(1,1,1)
+# plt.plot(epochs_array, train_loss, color='b', label="Training Loss")
+# plt.plot(epochs_array, test_loss, '--', color='orange', label='Testing Loss')
+# axs.set_ylabel('Loss')
+# axs.set_xlabel('Training Epoch')
+# axs.set_title('Analyzing Training and Testing Loss')
+# axs.legend()
+# fig.savefig(model_path + figure_name)
+#
+# # Save the model
+# torch.save(model.state_dict(), model_path + model_name)
+#
+#
+#
