@@ -132,37 +132,26 @@ def test(dataloader, model, loss_fn):
 
 # MAIN
 # Create a dataset
-# model_path = "/home/flashfire/FlashFire/models/"
 data_dir = os.path.join(sys.path[0], 'data', data_datetime)
 annotations_file = os.path.join(data_dir, 'labels.csv')  # the name of the csv file
 img_dir = os.path.join(data_dir, 'images') # the name of the folder with all the images in it
 bearcart_dataset = BearCartDataset(annotations_file, img_dir)
 print(f"data length: {len(bearcart_dataset)}")
-
 # Create training dataloader and test dataloader
 train_size = round(len(bearcart_dataset)*0.9)
 test_size = len(bearcart_dataset) - train_size 
 print(f"train size: {train_size}, test size: {test_size}")
-
-# # Load the datset (split into train and test)
-# train_data, test_data = random_split(collected_data, [train_data_size, test_data_size])
-# train_dataloader = DataLoader(train_data, batch_size=125)
-# test_dataloader = DataLoader(test_data, batch_size=125)
-#
-#
-# # Initialize the model
-# # Models that train well:
-# #     lr = 0.001, epochs = 10
-# #     lr = 0.0001, epochs = 15 (epochs = 20 might also work)
-#
-# # Define an optimizer and learning rate scheduler
-# lr = 0.001
-# model = cnn_network.megaNet().to(DEVICE)# choose the architecture class from cnn_network.py
-# optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-# #scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
-# loss_fn = nn.MSELoss()
-# epochs = 15
-#
+train_data, test_data = random_split(bearcart_dataset, [train_size, test_size])
+train_dataloader = DataLoader(train_data, batch_size=125)
+test_dataloader = DataLoader(test_data, batch_size=125)
+# Create model
+model = cnn_network.megaNet().to(DEVICE)  # choose the architecture class from cnn_network.py
+# Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
+lr = 0.001
+optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+# scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
+loss_fn = nn.MSELoss()
+epochs = 15
 # # Optimize the model
 # train_loss = []
 # test_loss = []
@@ -181,6 +170,8 @@ print(f"train size: {train_size}, test size: {test_size}")
 #     test_loss.append(testing_loss)   
 #
 # print(f"Optimize Done!")
+
+
 #
 #
 # #print("final test lost: ", test_loss[-1])
