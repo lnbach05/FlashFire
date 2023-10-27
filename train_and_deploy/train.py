@@ -9,23 +9,19 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.optim.lr_scheduler import StepLR
+# from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision import transforms
 import matplotlib.pyplot as plt
 import cnn_network
 import cv2 as cv
 
-# Pass in command line arguments for path name 
+# Pass in command line arguments for path name
 if len(sys.argv) != 2:
-    print(f'Training script needs 1 parameters!!!')
+    print('Training script needs 1 parameters!!!')
     sys.exit(1)  # exit with an error code
 else:
     data_datetime = sys.argv[1]
-    # model_name = sys.argv[2]
-    # figure_name = sys.argv[3]
 
 
 # Designate processing unit for CNN training
@@ -69,31 +65,8 @@ def train(dataloader, model, loss_fn, optimizer):
         num_used_samples += target.shape[0]
         print(f"batch loss: {batch_loss.item()} [{num_used_samples}/{len(dataloader.dataset)}]")
         ep_loss = (ep_loss * b + batch_loss.item()) / (b + 1)
-    # losses_train.append(ep_loss)
     return ep_loss
 
-    # size = len(dataloader.dataset)
-    # model.train()
-    # epoch_loss = 0.0
-    #
-    # for batch, (image, steering, throttle) in enumerate(dataloader):
-    #     # Combine steering and throttle into one tensor (2 columns, X rows)
-    #     target = torch.stack((steering, throttle), -1) 
-    #     X, y = image.to(DEVICE), target.to(DEVICE)
-    #
-    #     # Compute prediction error
-    #     pred = model(X)  # forward propagation
-    #     batch_loss = loss_fn(pred, y)  # compute loss
-    #     optimizer.zero_grad()  # zero previous gradient
-    #     batch_loss.backward()  # back propagatin
-    #     optimizer.step()  # update parameters
-    #     
-    #     batch_loss, sample_count = batch_loss.item(), (batch + 1) * len(X)
-    #     epoch_loss = (epoch_loss*batch + batch_loss) / (batch + 1)
-    #     print(f"loss: {batch_loss:>7f} [{sample_count:>5d}/{size:>5d}]")
-    #     
-    # return epoch_loss
-        
 
 def test(dataloader, model, loss_fn):
     model.eval()
@@ -105,25 +78,7 @@ def test(dataloader, model, loss_fn):
             pred = model(feature)
             batch_loss = loss_fn(pred, target)
             ep_loss = (ep_loss * b + batch_loss.item()) / (b + 1)
-        # losses_eval.append(ep_loss_eval)
     return ep_loss
-    # # Define a test function to evaluate model performance
-    #
-    # #size = len(dataloader.dataset)
-    # num_batches = len(dataloader)
-    # model.eval()
-    # test_loss = 0.0
-    # with torch.no_grad():
-    #     for image, steering, throttle in dataloader:
-    #         #Combine steering and throttle into one tensor (2 columns, X rows)
-    #         target = torch.stack((steering, throttle), -1) 
-    #         X, y = image.to(DEVICE), target.to(DEVICE)
-    #         pred = model(X)
-    #         test_loss += loss_fn(pred, y).item()
-    # test_loss /= num_batches
-    # print(f"Test Error: {test_loss:>8f} \n")
-    #
-    # return test_loss
 
 
 # MAIN
@@ -147,7 +102,7 @@ lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 # scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
 loss_fn = nn.MSELoss()
-epochs = 2
+epochs = 15
 # Optimize the model
 train_losses = []
 test_losses = []
@@ -166,33 +121,14 @@ for t in range(epochs):
 
 print("Optimize Done!")
 
-
-#
-#
-# #print("final test lost: ", test_loss[-1])
-# len_train_loss = len(train_loss)
-# len_test_loss = len(test_loss)
-# print("Train loss length: ", len_train_loss)
-# print("Test loss length: ", len_test_loss)
-#
-#
-# # create array for x values for plotting train
-# epochs_array = list(range(epochs))
-#
-# # Graph the test and train data
-# plot_title = f'{model._get_name()} - {epochs} pochs - {lr} learning rate'
-# fig = plt.figure()
-# axs = fig.add_subplot(1,1,1)
-# plt.plot(epochs_array, train_loss, color='b', label="Training Loss")
-# plt.plot(epochs_array, test_loss, '--', color='orange', label='Testing Loss')
-# axs.set_ylabel('Loss')
-# axs.set_xlabel('Training Epoch')
-# axs.set_title('Analyzing Training and Testing Loss')
-# axs.legend()
-# fig.savefig(model_path + figure_name)
-#
-# # Save the model
-# torch.save(model.state_dict(), model_path + model_name)
-#
-#
-#
+# Graph training process
+pilot_title = f'{model._get_name()}-{epochs}epochs-{lr}lr'
+plt.plot(range(epochs), train_losses, 'b--', label='Training')
+plt.plot(range(epochs), test_losses, 'orange', label='Test')
+plt.xlabel('Epoch')
+plt.ylabel('MSE Loss')
+plt.legend()
+plt.title(pilot_title)
+plt.savefig(os.path.join(data_dir, f'{pilot_title}.png'))
+# Save the model
+torch.save(model.state_dict(), os.path.join(data_dir, f'{pilot_title}.pth'))
