@@ -1,8 +1,3 @@
-
-# Deploy trained neural network for self driving 
-
-
-#!/usr/bin/python3
 import sys
 import os
 import cv2 as cv
@@ -10,7 +5,6 @@ from gpiozero import Servo, PhaseEnableMotor
 
 from time import time
 import torch
-import torch.nn as nn
 from torchvision import transforms
 import cnn_network
 
@@ -24,7 +18,7 @@ else:
 # init servo controller
 model_path = os.path.join(sys.path[0], 'models', model_name)
 to_tensor = transforms.ToTensor()
-model = cnn_network.DonkeyNet()
+model = cnn_network.DonkeyNet(200, 200)  # TODO: need config file
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 # init variables
 throttle, steer = 0., 0.
