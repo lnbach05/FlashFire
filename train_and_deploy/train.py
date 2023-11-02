@@ -31,15 +31,16 @@ class BearCartDataset(Dataset):
     def __init__(self, annotations_file, img_dir):
         self.img_labels = pd.read_csv(annotations_file)
         self.img_dir = img_dir
-        #Apply data augmentation
-        self.transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.RandomResizedCrop(200),
-            transforms.RandomHorizontalFlip(),  # Randomly flip the image horizontally
-            transforms.RandomRotation(30),      # Randomly rotate the image by up to 30 degrees
-            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),  # Randomly adjust brightness, contrast, saturation, and hue
-            transforms.RandomGrayscale(p=0.2),  # Randomly convert the image to grayscale with a probability of 0.2
-        ])
+        self.transform = transforms.ToTensor()
+        
+        # transforms.Compose([
+        #     transforms.ToTensor(),
+        #     transforms.RandomResizedCrop(200),
+        #     transforms.RandomHorizontalFlip(),  # Randomly flip the image horizontally
+        #     transforms.RandomRotation(30),      # Randomly rotate the image by up to 30 degrees
+        #     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),  # Randomly adjust brightness, contrast, saturation, and hue
+        #     transforms.RandomGrayscale(p=0.2),  # Randomly convert the image to grayscale with a probability of 0.2
+        # ])
 
     def __len__(self):
         return len(self.img_labels)
