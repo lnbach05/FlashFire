@@ -53,10 +53,14 @@ try:
         pred_steer, pred_throttle = model(img_tensor[None, :]).squeeze()
         steer = float(pred_steer)
         throttle = float(pred_throttle)
-        # if throttle >= 1:  # predicted throttle may over the limit
-        #     throttle = .999
-        # elif throttle <= -1:
-        #     throttle = -.999
+        if throttle >= 1:  # predicted throttle may over the limit
+            throttle = .999
+        elif throttle <= -1:
+            throttle = -.999
+        if steer >= 1:
+            steer = .999
+        elif steer <= -1:
+            steer = -.999
         motor.forward(throttle)
         servo.value = steer
         action = [steer, throttle]
