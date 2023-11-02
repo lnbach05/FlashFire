@@ -31,6 +31,7 @@ class BearCartDataset(Dataset):
     def __init__(self, annotations_file, img_dir):
         self.img_labels = pd.read_csv(annotations_file)
         self.img_dir = img_dir
+        #Apply data augmentation
         self.transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.RandomResizedCrop(200),
@@ -90,6 +91,7 @@ annotations_file = os.path.join(data_dir, 'labels.csv')  # the name of the csv f
 img_dir = os.path.join(data_dir, 'images') # the name of the folder with all the images in it
 bearcart_dataset = BearCartDataset(annotations_file, img_dir)
 print(f"data length: {len(bearcart_dataset)}")
+
 # Create training dataloader and test dataloader
 train_size = round(len(bearcart_dataset)*0.9)
 test_size = len(bearcart_dataset) - train_size
@@ -97,7 +99,8 @@ print(f"train size: {train_size}, test size: {test_size}")
 train_data, test_data = random_split(bearcart_dataset, [train_size, test_size])
 train_dataloader = DataLoader(train_data, batch_size=125)
 test_dataloader = DataLoader(test_data, batch_size=125)
-# Create model
+
+# Create model - Pass in image size
 model = cnn_network.DonkeyNet(200, 200).to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.001
