@@ -129,8 +129,8 @@ class DonkeyNet(nn.Module):
         size_fc_input = size_5[0] * size_5[1] * 64
 
         self.fc1 = nn.Linear(size_fc_input, 128)
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, 2)
+        self.fc2 = nn.Linear(128, 128)
+        self.fc3 = nn.Linear(128, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
