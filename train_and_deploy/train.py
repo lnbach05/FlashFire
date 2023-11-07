@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 # from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader, Dataset, random_split
-from torchvision import transforms
+from torchvision.transforms import v2
 import matplotlib.pyplot as plt
 import cnn_network
 import cv2 as cv
@@ -28,19 +28,32 @@ class BearCartDataset(Dataset):
     """
     Customized dataset
     """
-    def __init__(self, annotations_file, img_dir):
+    def __init__(self, annotations_file, img_dir, augment, noise, noise_factor):
         self.img_labels = pd.read_csv(annotations_file)
         self.img_dir = img_dir
-        self.transform = transforms.ToTensor()
-        
-        # transforms.Compose([
-        #     transforms.ToTensor(),
-        #     transforms.RandomResizedCrop(200),
-        #     transforms.RandomHorizontalFlip(),  # Randomly flip the image horizontally
-        #     transforms.RandomRotation(30),      # Randomly rotate the image by up to 30 degrees
-        #     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),  # Randomly adjust brightness, contrast, saturation, and hue
-        #     transforms.RandomGrayscale(p=0.2),  # Randomly convert the image to grayscale with a probability of 0.2
-        # ])
+        self.augment = augment
+        self.noise = noise
+        self.noise_factor = noise_factor
+
+        if self.augment:
+            #not messing with the color, going to do that with noise injection
+            v2.Compose([
+                v2.ToTensor(),
+                v2.RandomHorizontalFlip(0.2),  # Randomly flip the image horizontally
+                v2.RandomVerticalFlip(0.2),
+                v2.RandomRotation(30),      # Randomly rotate the image by up to 30 degrees
+            ])
+        else:
+            self.transform = v2.ToTensor()
+
+    def add_noise(self, image):
+        if self.noise:
+            noise = np.random.normal(scale=self.noise_factor, size=image.shape)
+            noisy_image = image + noise
+            noisy_image = np.clip(noisy_image, 0, 1)
+            return noisy_image
+        else:
+            return image
 
     def __len__(self):
         return len(self.img_labels)
@@ -48,6 +61,12 @@ class BearCartDataset(Dataset):
     def __getitem__(self, idx):
         img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
         image = cv.imread(img_path, cv.IMREAD_COLOR)
+
+        if self.noise:
+            image = self.add_noise(image)
+        else:
+            image = image
+
         image_tensor = self.transform(image)
         steering = self.img_labels.iloc[idx, 1].astype(np.float32)
         throttle = self.img_labels.iloc[idx, 2].astype(np.float32)
@@ -90,7 +109,7 @@ def test(dataloader, model, loss_fn):
 data_dir = os.path.join(sys.path[0], 'data', data_datetime)
 annotations_file = os.path.join(data_dir, 'labels.csv')  # the name of the csv file
 img_dir = os.path.join(data_dir, 'images') # the name of the folder with all the images in it
-bearcart_dataset = BearCartDataset(annotations_file, img_dir)
+bearcart_dataset = BearCartDataset(annotations_file, img_dir, augment=True, noise=True, noise_factor=0.1)
 print(f"data length: {len(bearcart_dataset)}")
 
 # Create training dataloader and test dataloader
