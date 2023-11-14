@@ -109,7 +109,7 @@ def test(dataloader, model, loss_fn):
 data_dir = os.path.join(sys.path[0], 'data', data_datetime)
 annotations_file = os.path.join(data_dir, 'labels.csv')  # the name of the csv file
 img_dir = os.path.join(data_dir, 'images') # the name of the folder with all the images in it
-bearcart_dataset = BearCartDataset(annotations_file, img_dir, augment=True, noise=False, noise_factor=0.1)
+bearcart_dataset = BearCartDataset(annotations_file, img_dir, augment=False, noise=False, noise_factor=0.1)
 print(f"data length: {len(bearcart_dataset)}")
 
 # Create training dataloader and test dataloader
@@ -121,7 +121,7 @@ train_dataloader = DataLoader(train_data, batch_size=125)
 test_dataloader = DataLoader(test_data, batch_size=125)
 
 # Create model - Pass in image size
-model = cnn_network.DonkeyNet(200, 200).to(DEVICE)  # choose the architecture class from cnn_network.py
+model = cnn_network.hblNet(200, 200).to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -147,7 +147,7 @@ for t in range(epochs):
 print("Optimize Done!")
 
 # Graph training process
-pilot_title = f'{model._get_name()}-{epochs}epochs-{lr}lr - with DA'
+pilot_title = f'{model._get_name()}-{epochs}epochs-{lr}lr'
 plt.plot(range(epochs), train_losses, 'b--', label='Training')
 plt.plot(range(epochs), test_losses, 'orange', label='Test')
 plt.xlabel('Epoch')
