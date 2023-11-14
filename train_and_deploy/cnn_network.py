@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 
-class hblNet(nn.module):
+class hblNet(nn.Module):
     def __init__(self, width, height):
         super().__init__()
         
