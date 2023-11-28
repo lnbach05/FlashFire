@@ -121,7 +121,7 @@ train_dataloader = DataLoader(train_data, batch_size=125)
 test_dataloader = DataLoader(test_data, batch_size=125)
 
 # Create model - Pass in image size
-model = cnn_network.DonkeyNet(200, 200).to(DEVICE)  # choose the architecture class from cnn_network.py
+model = cnn_network.hblNet(200, 200).to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
