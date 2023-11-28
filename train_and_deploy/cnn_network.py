@@ -25,7 +25,6 @@ class hblNet(nn.Module):
 
         #Fully Connected Layers
         self.fc1 = nn.Linear(size_fc_input, 84)
-        self.dropout1 = nn.Dropout(0.5)  # 50% dropout rate
         self.fc2 = nn.Linear(84, 42)
         self.fc3 = nn.Linear(42, 2)
         self.relu = nn.ReLU()
@@ -41,7 +40,6 @@ class hblNet(nn.Module):
 
         x = self.flatten(x)
         x = self.relu(self.fc1(x))
-        x = self.dropout1(x)  # Apply dropout after the first fully connected layer
         x = self.relu(self.fc2(x))
         x = self.fc3(x)
         return x
