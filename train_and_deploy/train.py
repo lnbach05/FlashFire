@@ -127,7 +127,7 @@ lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 # scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
 loss_fn = nn.MSELoss()
-epochs = 15
+epochs = 25
 # Optimize the model
 train_losses = []
 test_losses = []
