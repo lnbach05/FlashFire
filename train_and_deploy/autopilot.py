@@ -18,7 +18,7 @@ else:
 # init servo controller
 model_path = os.path.join(sys.path[0], 'models', model_name)
 to_tensor = transforms.ToTensor()
-model = cnn_network.DonkeyNet(200, 200)  # TODO: need config file
+model = cnn_network.DonkeyNet(120, 160)  # TODO: need config file
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 # init variables
 throttle, steer = 0., 0.
@@ -48,7 +48,7 @@ try:
             cv.destroyAllWindows()
             sys.exit()
         # predict steer and throttle
-        image = cv.resize(frame, (200, 200))
+        image = cv.resize(frame, (120, 160))
         img_tensor = to_tensor(image)
         pred_steer, pred_throttle = model(img_tensor[None, :]).squeeze()
         steer = float(pred_steer)
