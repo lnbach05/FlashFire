@@ -109,7 +109,7 @@ def test(dataloader, model, loss_fn):
 data_dir = os.path.join(sys.path[0], 'data', data_datetime)
 annotations_file = os.path.join(data_dir, 'labels.csv')  # the name of the csv file
 img_dir = os.path.join(data_dir, 'images') # the name of the folder with all the images in it
-bearcart_dataset = BearCartDataset(annotations_file, img_dir, augment=False, noise=False, noise_factor=0.1)
+bearcart_dataset = BearCartDataset(annotations_file, img_dir, augment=True, noise=False, noise_factor=0.1)
 print(f"data length: {len(bearcart_dataset)}")
 
 # Create training dataloader and test dataloader
