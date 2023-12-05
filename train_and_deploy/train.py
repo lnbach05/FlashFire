@@ -126,7 +126,7 @@ model = cnn_network.hblNet(120, 160).to(DEVICE)  # choose the architecture class
 lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.2)
-loss_fn = nn.CrossEntropyLoss()
+loss_fn = nn.MSELoss()
 epochs = 15
 # Optimize the model
 train_losses = []
