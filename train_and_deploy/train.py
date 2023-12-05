@@ -124,8 +124,8 @@ test_dataloader = DataLoader(test_data, batch_size=125)
 model = cnn_network.hblNet(120, 160).to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.0005
-optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9)
-# scheduler = StepLR(optimizer, step_size=5, gamma=0.05)  # Adjust the step_size and gamma as needed
+optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 loss_fn = nn.MSELoss()
 epochs = 15
 # Optimize the model
@@ -136,13 +136,13 @@ for t in range(epochs):
     ep_train_loss = train(train_dataloader, model, loss_fn, optimizer)
     ep_test_loss = test(test_dataloader, model, loss_fn)
     print(f"epoch {t+1} training loss: {ep_train_loss}, testing loss: {ep_test_loss}")
-    # Apply the learning rate scheduler after each epoch
-    # scheduler.step()
     current_lr = optimizer.param_groups[0]['lr']
     print(f"Learning rate after scheduler step: {current_lr}")
     # save values
     train_losses.append(ep_train_loss)
     test_losses.append(ep_test_loss)
+    # Apply the learning rate scheduler after each epoch
+    scheduler.step()
 
 print("Optimize Done!")
 
