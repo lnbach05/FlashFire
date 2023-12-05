@@ -16,7 +16,7 @@ class hblNet(nn.Module):
         #Compute Sizes
         size_input = (width, height)  # output size: (input_size + 2*padding_size - kernel_size) / stride_size + 1
         size_1 = (int((size_input[0] - 5) / 2 + 1), int((size_input[1] - 5) / 2 + 1))
-        size_2 = (int((size_1[0] - 5) / 2 + 1), int((size_1[1] - 5) / 2 + 1))
+        size_2 = (int((size_1[0] - 3) / 2 + 1), int((size_1[1] - 3) / 2 + 1))
         # size_3 = (int((size_2[0] - 3) / 2 + 1), int((size_2[1] - 3) / 2 + 1))
         # size_4 = (int((size_3[0] - 3) / 2 + 1), int((size_3[1] - 3) / 2 + 1))
         # size_5 = (int(size_4[0] - 3 + 1), int(size_4[1] - 3 + 1))
