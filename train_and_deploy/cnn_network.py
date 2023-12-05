@@ -33,7 +33,7 @@ class hblNet(nn.Module):
     def forward(self, x):              
         x = self.relu(self.conv_1(x))  
         x = self.relu(self.conv_2(x))  
-        x = self.relu(self.conv_3(x))  
+        # x = self.relu(self.conv_3(x))  
         # x = self.relu(self.conv_4(x))  
         # x = self.relu(self.conv_5(x)) 
         # x = self.relu(self.conv_6(x))
