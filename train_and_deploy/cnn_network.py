@@ -30,6 +30,8 @@ class hblNet(nn.Module):
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
+        self.dropout_fc = nn.Dropout(0.5)
+
     def forward(self, x):              
         x = self.relu(self.conv_1(x))  
         x = self.relu(self.conv_2(x))  
@@ -40,7 +42,9 @@ class hblNet(nn.Module):
 
         x = self.flatten(x)
         x = self.relu(self.fc1(x))
+        x = self.dropout_fc(x)
         x = self.relu(self.fc2(x))
+        x = self.dropout_fc(x)
         x = self.fc3(x)
         return x
 
