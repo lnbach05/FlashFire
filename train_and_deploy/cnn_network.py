@@ -24,9 +24,9 @@ class hblNet(nn.Module):
         size_fc_input = size_3[0] * size_3[1] * 82
 
         #Fully Connected Layers
-        self.fc1 = nn.Linear(size_fc_input, 64)
-        self.fc2 = nn.Linear(64, 32)
-        self.fc3 = nn.Linear(32, 2)
+        self.fc1 = nn.Linear(size_fc_input, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
