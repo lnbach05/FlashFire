@@ -21,7 +21,7 @@ class hblNet(nn.Module):
         size_4 = (int((size_3[0] - 3) / 1 + 1), int((size_3[1] - 3) / 1 + 1))
         # size_5 = (int(size_4[0] - 3 + 1), int(size_4[1] - 3 + 1))
         # size_6 = (int(size_5[0] - 3 + 1), int(size_5[1] - 3 + 1))
-        size_fc_input = size_4[0] * size_4[1] * 82
+        size_fc_input = size_4[0] * size_4[1] * 64
 
         #Fully Connected Layers
         self.fc1 = nn.Linear(size_fc_input, 64)
