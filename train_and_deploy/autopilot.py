@@ -55,14 +55,14 @@ try:
         img_tensor = to_tensor(image)
         pred_steer, pred_throttle = model(img_tensor[None, :]).squeeze()
         steer = float(pred_steer)
-        if steer == 0:
-            servo.value = center
-        elif steer > center + offset:
-            servo.value = offset
-        elif steer < -(steer + offset):
-            servo.value = -offset
-        else:
-            servo.value = steer
+        # if steer == 0:
+        #     servo.value = center
+        # elif steer > center + offset:
+        #     servo.value = offset
+        # elif steer < -(steer + offset):
+        #     servo.value = -offset
+        # else:
+        #     servo.value = steer
         throttle = (float(pred_throttle)) * 0.9
         if throttle >= 1:  # predicted throttle may over the limit
             throttle = .999
