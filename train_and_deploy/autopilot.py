@@ -38,6 +38,9 @@ ave_frame_rate = 0.
 motor = PhaseEnableMotor(phase=19, enable=26)
 servo = Servo(24)
 
+center = 0.05
+offset = 0.5
+
 # MAIN
 try:
     while True:
@@ -52,7 +55,15 @@ try:
         img_tensor = to_tensor(image)
         pred_steer, pred_throttle = model(img_tensor[None, :]).squeeze()
         steer = float(pred_steer)
-        throttle = float(pred_throttle)
+        if steer == 0:
+            servo.value = center
+        elif steer > center + offset:
+            servo.value = offset
+        elif steer < -(steer + offset):
+            servo.value = -offset
+        else:
+            servo.value = steer
+        throttle = (float(pred_throttle)) * 0.9
         if throttle >= 1:  # predicted throttle may over the limit
             throttle = .999
         elif throttle <= -1:
