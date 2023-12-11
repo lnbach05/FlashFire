@@ -24,13 +24,11 @@ class hblNet(nn.Module):
         size_fc_input = size_3[0] * size_3[1] * 82
 
         #Fully Connected Layers
-        self.fc1 = nn.Linear(size_fc_input, 64)
-        self.fc2 = nn.Linear(64, 32)
-        self.fc3 = nn.Linear(32, 2)
+        self.fc1 = nn.Linear(size_fc_input, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 2)
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
-
-        self.dropout_fc = nn.Dropout(0.5)
 
     def forward(self, x):              
         x = self.relu(self.conv_1(x))  
@@ -42,9 +40,8 @@ class hblNet(nn.Module):
 
         x = self.flatten(x)
         x = self.relu(self.fc1(x))
-        x = self.dropout_fc(x)
         x = self.relu(self.fc2(x))
-        x = self.dropout_fc(x)
+
         x = self.fc3(x)
         return x
 
@@ -91,14 +88,14 @@ class DonkeyNet(nn.Module):
         return x
     
 
-h = hblNet(120, 160)
-d = DonkeyNet(120, 160)
+# h = hblNet(120, 160)
+# d = DonkeyNet(120, 160)
 
-def count_parameters(model):
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+# def count_parameters(model):
+#     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-print("HBL NET: ", count_parameters(h))
-print("Donkey NET: ", count_parameters(d))
+# print("HBL NET: ", count_parameters(h))
+# print("Donkey NET: ", count_parameters(d))
 
 
 
