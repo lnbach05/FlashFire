@@ -38,8 +38,6 @@ ave_frame_rate = 0.
 motor = PhaseEnableMotor(phase=19, enable=26)
 servo = Servo(24)
 
-center = 0.05
-offset = 0.5
 
 # MAIN
 try:
@@ -63,7 +61,7 @@ try:
         #     servo.value = -offset
         # else:
         #     servo.value = steer
-        throttle = (float(pred_throttle)) * 0.9
+        throttle = (float(pred_throttle))
         if throttle >= 1:  # predicted throttle may over the limit
             throttle = .999
         elif throttle <= -1:
