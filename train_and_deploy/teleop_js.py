@@ -1,24 +1,15 @@
-##################################################################
-# Program Name: teleop_js.py
-# Contributors: 
-# 
-#  
-###################################################################
-
-#!/usr/bin/python3
 import sys
 import os
 import cv2 as cv
-#from adafruit_servokit import ServoKit
 import motor
 import pygame
 import time
 from gpiozero import LED
 import json
-
 from time import time
 
 # SETUP
+
 # load configs
 config_path = os.path.join(sys.path[0], "config.json")
 f = open(config_path)
@@ -27,21 +18,23 @@ steering_trim = data['steering_trim']
 throttle_lim = data['throttle_lim']
 
 # init controller
-#pygame.display.init()
 pygame.joystick.init()
 js = pygame.joystick.Joystick(0)
+
 # init variables
 throttle, steer = 0., 0.
 head_led = LED(16)
 tail_led = LED(12)
 LED_STATUS = False
+
 # init camera
 cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FPS, 20)
 for i in reversed(range(60)):
     if not i % 20:
         print(i/20)
-    ret, frame = cap.read()
+    ret, frame = cap.read() 
+
 # init timer
 start_stamp = time()
 frame_counts = 0
@@ -65,13 +58,11 @@ try:
             ang = 180
         elif ang < 0:
             ang = 0
-        #servo.angle = ang
         action = [steer, throttle]
         print(f"action: {action}")
         frame_counts += 1
         duration_since_start = time() - start_stamp
         ave_frame_rate = frame_counts / duration_since_start
-        # print(f"frame rate: {ave_frame_rate}")
         if cv.waitKey(1)==ord('q'):
             motor.kill()
             cv.destroyAllWindows()
