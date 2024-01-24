@@ -12,6 +12,6 @@ while True:
     for e in pygame.event.get():
         if e.type == pygame.JOYAXISMOTION:
             #Get joystick steeing angle value from joystick and save it to a variable 
-            steer = -js.get_axis(3)  # steer_input: -1: left, 1: right
+            steer = -js.get_axis(2)  # steer_input: -1: left, 1: right
     ang = -35 + steer * 55
     servo.angle = ang
