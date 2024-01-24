@@ -2,7 +2,6 @@ import sys
 import os
 import cv2 as cv
 from gpiozero import Servo, PhaseEnableMotor
-
 from time import time
 import torch
 from torchvision import transforms
@@ -13,17 +12,19 @@ if len(sys.argv) != num_parameters:
     print(f'Python script needs {num_parameters} parameters!!!')
 else:
     model_name = sys.argv[1]
+
 # SETUP
-# load configs
-# init servo controller
+# load configs and init servo controller
 model_path = os.path.join(sys.path[0], 'models', model_name)
 to_tensor = transforms.ToTensor()
 model = cnn_network.DonkeyNet()  # TODO: need config file
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+
 # init variables
 throttle, steer = 0., 0.
 is_recording = False
 frame_counts = 0
+
 # init camera
 cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FPS, 20)
@@ -37,7 +38,6 @@ ave_frame_rate = 0.
 
 motor = PhaseEnableMotor(phase=19, enable=26)
 servo = Servo(24)
-
 
 # MAIN
 try:
@@ -53,14 +53,6 @@ try:
         img_tensor = to_tensor(image)
         pred_steer, pred_throttle = model(img_tensor[None, :]).squeeze()
         steer = float(pred_steer)
-        # if steer == 0:
-        #     servo.value = center
-        # elif steer > center + offset:
-        #     servo.value = offset
-        # elif steer < -(steer + offset):
-        #     servo.value = -offset
-        # else:
-        #     servo.value = steer
         throttle = (float(pred_throttle))
         if throttle >= 1:  # predicted throttle may over the limit
             throttle = .999
@@ -74,6 +66,7 @@ try:
         servo.value = steer
         action = [steer, throttle]
         print(f"action: {action}")
+        
         # monitor frame rate
         duration_since_start = time() - start_stamp
         ave_frame_rate = frame_counts / duration_since_start
