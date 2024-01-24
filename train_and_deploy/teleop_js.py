@@ -25,9 +25,6 @@ f = open(config_path)
 data = json.load(f)
 steering_trim = data['steering_trim']
 throttle_lim = data['throttle_lim']
-# init servo controller
-#kit = ServoKit(channels=16)
-#servo = kit.servo[15]
 
 # init controller
 #pygame.display.init()
