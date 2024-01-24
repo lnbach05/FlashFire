@@ -2,6 +2,9 @@ import pygame
 import sys
 import os
 
+#Initialize pygame
+pygame.init()
+
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 # Initialize only the joystick module
