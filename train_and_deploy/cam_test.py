@@ -9,7 +9,7 @@ port = 5001
 
 # Create a socket connection to the Raspberry Pi
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(rasp_ip, port)
+client_socket.connect((rasp_ip, port))
 
 # Create an OpenCV window for displaying the stream
 cv2.namedWindow("Webcam Stream", cv2.WINDOW_NORMAL)
