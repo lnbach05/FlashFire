@@ -76,7 +76,7 @@ try:
         action = [steer, throttle]
 
         if is_recording:
-            frame = cv.resize(frame, (120, 160))
+            frame = cv.resize(frame, (300, 300)) #revert back to 120 by 160 afterwards
             cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
             # save labels
             label = [str(frame_counts)+'.jpg'] + action
