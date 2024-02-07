@@ -49,7 +49,7 @@ try:
             cv.destroyAllWindows()
             sys.exit()
         # predict steer and throttle
-        image = cv.resize(frame, (120, 160))
+        image = cv.resize(frame, (300, 300)) #change back to 120 by 160
         img_tensor = to_tensor(image)
         pred_steer, pred_throttle = model(img_tensor[None, :]).squeeze()
         steer = float(pred_steer)
