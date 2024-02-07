@@ -121,13 +121,13 @@ train_dataloader = DataLoader(train_data, batch_size=125)
 test_dataloader = DataLoader(test_data, batch_size=125)
 
 # Create model - Pass in image size
-model = cnn_network.hblNet(120, 160).to(DEVICE)  # choose the architecture class from cnn_network.py
+model = cnn_network.hblNet(300, 300).to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0.0001)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
 loss_fn = nn.MSELoss()
-epochs = 15
+epochs = 12 # switch back to 15 epochs
 # Optimize the model
 train_losses = []
 test_losses = []
