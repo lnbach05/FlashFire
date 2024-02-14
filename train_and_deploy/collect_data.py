@@ -1,6 +1,5 @@
 # Collect training data using bluetooth controller
 # While driving, save images and joystick inputs
-#!/usr/bin/python3
 
 import sys
 import os
@@ -12,7 +11,7 @@ import csv
 from datetime import datetime
 from time import time
 
-# SETUP
+#SETUP
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 image_dir = os.path.join(sys.path[0], 'data', datetime.now().strftime("%Y_%m_%d_%H_%M"), 'images/')
 if not os.path.exists(image_dir):
@@ -23,17 +22,17 @@ if not os.path.exists(image_dir):
             raise
 label_path = os.path.join(os.path.dirname(os.path.dirname(image_dir)), 'labels.csv')
 
-# init controller
+#Initialize controller
 pygame.display.init()
 pygame.joystick.init()
 js = pygame.joystick.Joystick(0)
 
-# init variables
+#Initialize variables
 throttle, steer = 0., 0.
 is_recording = True
 frame_counts = 0
 
-# init camera
+#Initialize camera
 cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FPS, 20)
 start_stamp = time()
@@ -45,10 +44,9 @@ motor = PhaseEnableMotor(phase=19, enable=26)
 servo = Servo(24)
 center = 0.01
 offset = 0.5
+servo.value = center
 
-servo.value = center #start servo with wheels straight
-
-# MAIN
+#MAIN
 try:
     while True:
         ret, frame = cap.read()
@@ -56,8 +54,20 @@ try:
             frame_counts += 1
         for e in pygame.event.get():
             if e.type == pygame.JOYAXISMOTION:
-                throttle = (-js.get_axis(1)) * 0.5 # throttle input: -1: max forward, 1: max backward
-                steer = -js.get_axis(2)  # steer_input: -1: left, 1: right
+                throttle = (-js.get_axis(1)) * 0.5
+                steer = -js.get_axis(2) 
+            elif e.type == pygame.JOYBUTTONDOWN:
+                if e.button == 9: # Button START
+                    pygame.quit()
+                    raise SystemExit
+                elif e.button == 0:  # Button Y
+                    if not is_recording:
+                        is_recording = True
+                        print("Recording started")       
+                elif e.button == 2:  # Button A
+                    if is_recording:
+                        is_recording = False
+                        print("Recording stopped")
 
         if throttle > 0:
             motor.forward(throttle)
@@ -76,22 +86,21 @@ try:
         action = [steer, throttle]
 
         if is_recording:
-            frame = cv.resize(frame, (300, 300)) #revert back to 120 by 160 afterwards
-            cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) # changed frame to gray
-            # save labels
+            frame = cv.resize(frame, (120, 160))
+            #Changed frame to gray
+            cv.imwrite(image_dir + str(frame_counts)+'.jpg', frame) 
+            #Cave labels
             label = [str(frame_counts)+'.jpg'] + action
             with open(label_path, 'a+', newline='') as f:
+                #Write the data
                 writer = csv.writer(f)
-                writer.writerow(label)  # write the data
+                writer.writerow(label)
 
-        # monitor frame rate
+        #Monitor frame rate
         duration_since_start = time() - start_stamp
         ave_frame_rate = frame_counts / duration_since_start
 
-        if cv.waitKey(1)==ord('q'):
-            cv.destroyAllWindows()
-            pygame.quit()
-            sys.exit()
+#Allow the stop of the script using Control C
 except KeyboardInterrupt:
     cv.destroyAllWindows()
     pygame.quit()
