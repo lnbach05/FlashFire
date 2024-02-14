@@ -17,7 +17,7 @@ else:
 # load configs and init servo controller
 model_path = os.path.join(sys.path[0], 'models', model_name)
 to_tensor = transforms.ToTensor()
-model = cnn_network.hblNet()  # TODO: need config file
+model = cnn_network.hblNet()  
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 
 # init variables
