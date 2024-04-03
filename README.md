@@ -1,4 +1,5 @@
-# BearCart-FlashFire
+# BearCart-FlashFire24
+This repo hosts a Senior Design project: a behavioral-cloning autonomous driving robot. 
 
 ## Project Overview
 
@@ -11,4 +12,7 @@
 ## Important Links 
 
 ## Contributors 
+- Lawan
+- Eric
+- Jeremy
 
