@@ -27,7 +27,7 @@ frame_counts = 0
 
 # init camera
 cap = cv.VideoCapture(0)
-cap.set(cv.CAP_PROP_FPS, 20)
+cap.set(cv.CAP_PROP_FPS, 40)
 for i in reversed(range(60)):  # warm up camera
     if not i % 20:
         print(i/20)
