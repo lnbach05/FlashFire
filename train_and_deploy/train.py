@@ -46,14 +46,14 @@ class BearCartDataset(Dataset):
         else:
             self.transform = v2.ToTensor()
 
-    def add_noise(self, image):
-        if self.noise:
-            noise = np.random.normal(scale=self.noise_factor, size=image.shape)
-            noisy_image = image + noise
-            noisy_image = np.clip(noisy_image, 0, 1)
-            return noisy_image
-        else:
-            return image
+    #def add_noise(self, image):
+        #if self.noise:
+            #noise = np.random.normal(scale=self.noise_factor, size=image.shape)
+            #noisy_image = image + noise
+            #noisy_image = np.clip(noisy_image, 0, 1)
+            #return noisy_image
+        #else:
+            #return image
 
     def __len__(self):
         return len(self.img_labels)
@@ -70,7 +70,7 @@ class BearCartDataset(Dataset):
         image_tensor = self.transform(image)
         steering = self.img_labels.iloc[idx, 1].astype(np.float32)
         throttle = self.img_labels.iloc[idx, 2].astype(np.float32)
-        return image_tensor.float(), steering, throttle
+        return image_tensor(float), steering, throttle
 
 
 def train(dataloader, model, loss_fn, optimizer):
@@ -121,7 +121,7 @@ train_dataloader = DataLoader(train_data, batch_size=125)
 test_dataloader = DataLoader(test_data, batch_size=125)
 
 # Create model - Pass in image size
-model = cnn_network.hblNet(300, 300).to(DEVICE)  # choose the architecture class from cnn_network.py
+model = cnn_network.hblNet(120, 160).to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0.0001)

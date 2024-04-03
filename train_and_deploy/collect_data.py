@@ -34,7 +34,7 @@ frame_counts = 0
 
 #Initialize camera
 cap = cv.VideoCapture(0)
-cap.set(cv.CAP_PROP_FPS, 20)
+cap.set(cv.CAP_PROP_FPS, 30)
 start_stamp = time()
 ave_frame_rate = 0.
 start_time=datetime.now().strftime("%Y_%m_%d_%H_%M_")
