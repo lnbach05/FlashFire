@@ -2,7 +2,6 @@
 Integrated test with servo, motor, camera, controller.
 Add data collection function to achieve the next step. 
 """
-
 import sys
 import numpy as np
 import cv2 as cv
@@ -20,7 +19,6 @@ STEER_CENTER = 0.2
 STEER_OFFSET = 0.7
 STEER_DIR = -1  # 1: steer left if steer.value > 0; -1: steer left if steer.value < 0. 
 THROTTLE_LIMIT = 0.3
-
 # Init servo 
 steer = Servo(pin=17)
 steer.value = STEER_CENTER #Starting angle
@@ -96,6 +94,7 @@ try:
             cv.destroyAllWindows()
             pygame.quit()
             sys.exit()
+            
 # Take care terminate signal (Ctrl-c)
 except KeyboardInterrupt:
     throttle.stop()
