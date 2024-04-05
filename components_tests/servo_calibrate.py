@@ -1,6 +1,6 @@
 from gpiozero import Servo
 
-servo = Servo(24)
+servo = Servo(17)
 
 try:
     while True:
