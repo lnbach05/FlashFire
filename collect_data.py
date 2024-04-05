@@ -1,7 +1,6 @@
 import sys
 import os
 from datetime import datetime
-import numpy as np
 import cv2 as cv
 import pygame
 from gpiozero import Servo, PhaseEnableMotor
