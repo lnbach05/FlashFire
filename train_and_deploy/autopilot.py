@@ -55,13 +55,13 @@ try:
         steer = float(pred_steer)
         throttle = (float(pred_throttle))
         if throttle >= 1:  # predicted throttle may over the limit
-            throttle = .999
+            throttle = .5
         elif throttle <= -1:
-            throttle = -.999
+            throttle = -.5
         if steer >= 1:
-            steer = .999
+            steer = .5
         elif steer <= -1:
-            steer = -.999
+            steer = -.5
         motor.forward(throttle)
         servo.value = steer
         action = [steer, throttle]
