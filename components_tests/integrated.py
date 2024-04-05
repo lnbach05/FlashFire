@@ -3,10 +3,8 @@ Integrated test with servo, motor, camera, controller.
 Add data collection function to achieve the next step. 
 """
 import sys
-import numpy as np
 import cv2 as cv
 import pygame
-import time
 from gpiozero import Servo, PhaseEnableMotor
 from time import time
 
@@ -58,7 +56,7 @@ try:
                 st_ax_val = round((js.get_axis(STEER_AXIS)), 2)  
                 th_ax_val = round((js.get_axis(THROTTLE_AXIS)), 2)  # keep 2 decimals
             elif e.type == pygame.JOYBUTTONDOWN:
-                if js.get_button(9):  # start button 
+                if js.get_button(11):  # start button 
                     throttle.stop()
                     throttle.close()
                     steer.close()
