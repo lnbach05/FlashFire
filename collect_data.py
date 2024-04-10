@@ -17,7 +17,7 @@ STEER_OFFSET = 0.7
 STEER_DIR = -1  # 1: steer left if steer.value < 0; -1: steer left if steer.value > 0. 
 THROTTLE_LIMIT = 0.3
 # Init servo 
-steer = Servo(pin=17)
+steer = Servo(pin=24)
 steer.value = STEER_CENTER #Starting angle
 # Init motor 
 throttle = PhaseEnableMotor(phase=19, enable=26)
