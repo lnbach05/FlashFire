@@ -8,16 +8,16 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision.transforms import v2
 import matplotlib.pyplot as plt
-import cnn_network
+import convnets
 import cv2 as cv
 
-# Pass in command line arguments for path name
+# Pass in command line arguments for data diretory name
+# e.g. python train.py 2022_02_22_22_22
 if len(sys.argv) != 2:
     print('Training script needs 1 parameters!!!')
     sys.exit(1)  # exit with an error code
 else:
     data_datetime = sys.argv[1]
-
 
 # Designate processing unit for CNN training
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -28,32 +28,10 @@ class BearCartDataset(Dataset):
     """
     Customized dataset
     """
-    def __init__(self, annotations_file, img_dir, augment, noise, noise_factor):
+    def __init__(self, annotations_file, img_dir):
         self.img_labels = pd.read_csv(annotations_file)
         self.img_dir = img_dir
-        self.augment = augment
-        self.noise = noise
-        self.noise_factor = noise_factor
-
-        if self.augment:
-            #not messing with the color, going to do that with noise injection
-            v2.Compose([
-                v2.ToTensor(),
-                v2.RandomHorizontalFlip(0.2),  # Randomly flip the image horizontally
-                v2.RandomVerticalFlip(0.2),
-                v2.RandomRotation(30),      # Randomly rotate the image by up to 30 degrees
-            ])
-        else:
-            self.transform = v2.ToTensor()
-
-    #def add_noise(self, image):
-        #if self.noise:
-            #noise = np.random.normal(scale=self.noise_factor, size=image.shape)
-            #noisy_image = image + noise
-            #noisy_image = np.clip(noisy_image, 0, 1)
-            #return noisy_image
-        #else:
-            #return image
+        self.transform = v2.ToTensor()
 
     def __len__(self):
         return len(self.img_labels)
@@ -61,12 +39,6 @@ class BearCartDataset(Dataset):
     def __getitem__(self, idx):
         img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
         image = cv.imread(img_path, cv.IMREAD_COLOR)
-
-        if self.noise:
-            image = self.add_noise(image)
-        else:
-            image = image
-
         image_tensor = self.transform(image)
         steering = self.img_labels.iloc[idx, 1].astype(np.float32)
         throttle = self.img_labels.iloc[idx, 2].astype(np.float32)
@@ -109,7 +81,7 @@ def test(dataloader, model, loss_fn):
 data_dir = os.path.join(sys.path[0], 'data', data_datetime)
 annotations_file = os.path.join(data_dir, 'labels.csv')  # the name of the csv file
 img_dir = os.path.join(data_dir, 'images') # the name of the folder with all the images in it
-bearcart_dataset = BearCartDataset(annotations_file, img_dir, augment=False, noise=False, noise_factor=0.1)
+bearcart_dataset = BearCartDataset(annotations_file, img_dir)
 print(f"data length: {len(bearcart_dataset)}")
 
 # Create training dataloader and test dataloader
@@ -121,17 +93,13 @@ train_dataloader = DataLoader(train_data, batch_size=125)
 test_dataloader = DataLoader(test_data, batch_size=125)
 
 # Create model - Pass in image size
-<<<<<<< HEAD
-model = cnn_network.hblNet(120, 160).to(DEVICE)  # choose the architecture class from cnn_network.py
-=======
-model = cnn_network.DonkeyNet().to(DEVICE)  # choose the architecture class from cnn_network.py
->>>>>>> af2fc0cbd83395b36c2724fc3f83139a6f20bac6
+model = convnets.DonkeyNet().to(DEVICE)  # choose the architecture class from cnn_network.py
 # Hyper-parameters (lr=0.001, epochs=10 | lr=0.0001, epochs=15 or 20)
 lr = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0.0001)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
+# scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
 loss_fn = nn.MSELoss()
-epochs = 12 # switch back to 15 epochs
+epochs = 15 # switch back to 15 epochs
 # Optimize the model
 train_losses = []
 test_losses = []
@@ -146,7 +114,7 @@ for t in range(epochs):
     train_losses.append(ep_train_loss)
     test_losses.append(ep_test_loss)
     # Apply the learning rate scheduler after each epoch
-    scheduler.step()
+    # scheduler.step()
 
 print("Optimize Done!")
 
