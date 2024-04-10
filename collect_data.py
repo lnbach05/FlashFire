@@ -50,7 +50,7 @@ frame_counts = 0
 ave_frame_rate = 0.
 # Init joystick axes values
 st_ax_val, th_ax_val = 0., 0.
-is_recording = False
+is_recording = True
 
 # MAIN LOOP
 try:
@@ -73,8 +73,9 @@ try:
                     pygame.quit()
                     print("E-STOP PRESSED. TERMINATE")
                     sys.exit()
-                elif js.get_button(0):  # A button
+                elif js.get_button(1):  # A button
                     is_recording = not is_recording
+                    print(f'recording {is_recording}')
         # Calaculate steering and throttle value
         act_st = st_ax_val  # steer_input: -1: left, 1: right
         act_th = -th_ax_val  # throttle input: -1: max forward, 1: max backward
