@@ -12,8 +12,8 @@ import csv
 # Load configs
 THROTTLE_AXIS = 1
 STEER_AXIS = 2
-STEER_CENTER = 0.2
-STEER_OFFSET = 0.7
+STEER_CENTER = 0
+STEER_OFFSET = 0.4
 STEER_DIR = -1  # 1: steer left if steer.value < 0; -1: steer left if steer.value > 0. 
 THROTTLE_LIMIT = 0.3
 # Init servo 
@@ -35,7 +35,7 @@ if not os.path.exists(image_dir):
             raise
 label_path = os.path.join(os.path.dirname(os.path.dirname(image_dir)), 'labels.csv')
 # Init camera
-cap = cv.VideoCapture(2)
+cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FPS, 20)
 for i in reversed(range(60)):
     ret, frame = cap.read()
