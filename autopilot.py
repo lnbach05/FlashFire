@@ -13,8 +13,8 @@ import convnets
 # Load configs
 THROTTLE_AXIS = 1
 STEER_AXIS = 2
-STEER_CENTER = 0.2
-STEER_OFFSET = 0.7
+STEER_CENTER = 0
+STEER_OFFSET = 0.4
 STEER_DIR = -1  # 1: steer left if steer.value < 0; -1: steer left if steer.value > 0. 
 THROTTLE_LIMIT = 0.3
 # Init servo 
@@ -32,7 +32,7 @@ to_tensor = transforms.ToTensor()
 model = convnets.DonkeyNet()  
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 # Init camera
-cap = cv.VideoCapture(2)
+cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FPS, 20)
 for i in reversed(range(60)):
     ret, frame = cap.read()
