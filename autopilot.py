@@ -27,7 +27,7 @@ pygame.display.init()
 pygame.joystick.init()
 js = pygame.joystick.Joystick(0)
 # Load configs and init servo controller
-model_path = os.path.join(sys.path[0], 'models', model_name)
+model_path = os.path.join(sys.path[0], 'data', '2024_04_10_16_06/DonkeyNet-10epochs-0.001lr.pth')
 to_tensor = transforms.ToTensor()
 model = convnets.DonkeyNet()  
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
@@ -80,7 +80,12 @@ try:
             th_trim = .999
         elif th_trim <= -1:
             th_trim = -.999
-        throttle.forward(throttle)
+        if th_trim >= 0.1:
+            throttle.forward(min(th_trim, THROTTLE_LIMIT))
+        elif th_trim <= -0.1:
+            throttle.backward(min(-th_trim, THROTTLE_LIMIT))
+        else:
+            throttle.stop()
         steer.value = STEER_CENTER + st_trim * STEER_OFFSET * STEER_DIR
         print(f"predicted action: {st_pred, th_pred}")        
         frame_counts += 1
