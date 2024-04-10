@@ -1,10 +1,10 @@
 from gpiozero import Servo
 from time import sleep
 
-servo = Servo(24)
+servo = Servo(17)
 
 try:
-    while True:
+    for _ in range(2):  # loop twice
         servo.min()
         sleep(0.5)
         servo.mid()

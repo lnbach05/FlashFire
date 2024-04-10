@@ -1,8 +1,12 @@
-# BearCart-FlashFire
+# BearCart-FlashFire24
+This repo hosts a Senior Design project: a behavioral-cloning autonomous driving robot. 
 
 ## Project Overview
 
-## Repository Contents
+## Get-Started
+```console
+pip install -r requirements.txt
+```
 
 ## Convolutional Neural Network
 
@@ -11,4 +15,7 @@
 ## Important Links 
 
 ## Contributors 
+- Lawan
+- Eric
+- Jeremy
 
