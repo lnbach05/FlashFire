@@ -3,7 +3,10 @@ This repo hosts a Senior Design project: a behavioral-cloning autonomous driving
 
 ## Project Overview
 
-## Repository Contents
+## Get-Started
+```console
+pip install -r requirements.txt
+```
 
 ## Convolutional Neural Network
 
