@@ -27,7 +27,7 @@ pygame.display.init()
 pygame.joystick.init()
 js = pygame.joystick.Joystick(0)
 # Load configs and init servo controller
-model_path = os.path.join(sys.path[0], 'data', '2024_04_10_16_06/DonkeyNet-10epochs-0.001lr.pth')
+model_path = os.path.join(sys.path[0], 'data', '2024_04_10_16_06/DonkeyNet-15epochs-0.001lr.pth')
 to_tensor = transforms.ToTensor()
 model = convnets.DonkeyNet()  
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
